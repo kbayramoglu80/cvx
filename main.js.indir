@@ -1,0 +1,164 @@
+$(document).ready(function() {
+    $('.slideshow').show();
+    $('.poll_btn').click(function() {
+        var aide = $(this).attr('aid');
+        var side = $('input[name=ank]:checked').attr('sid');
+		console.log(side);
+        if (side != undefined || side != null) {
+			
+			$.post(siteurlsi + "/ajax.html", {act:'anketsoyla', aid:aide, sid:side}, function(data){
+				
+				
+				 if (data == "true") {
+                        alert("Ankete katýldýðýnýz için teþekkür ederiz.")
+                    } else {
+                        alert("Bu anketi zaten oyladýnýz!")
+                    }
+		
+			});
+        } else {
+            alert("Lütfen bir seçim yapýnýz!")
+        }
+    });
+    $('.polls_result_text').click(function() {
+        $('.poll_sec').css('opacity', '0.4');
+        $('.poll_sec').css('filter', 'alpha(opacity=40)');
+        var aide = $(this).attr('aid');
+		
+		
+		$.post(siteurlsi + "/ajax.html", {act:'anketsonuc', aid:aide}, function(data){
+				 $('.poll_sec').hide();
+                $('.poll_sec').hide();
+                $('.poll_sec').hide();
+                $('#polls_stats').html(data);
+                $('#polls_stats').show()
+				
+				
+		
+			});
+		
+    });
+
+     $('.search_ico').click(function(){
+
+    	$('.search_text_area').css('display','block');
+
+    	$('#src_text').focus();
+
+    });
+
+     $('.search_text_area i').click(function(){
+
+    	$('.search_text_area').css('display','none');
+
+    });
+
+      $("#src_text").keypress(function(e) {
+            if(e.keyCode==13) {
+               getSearch();
+            }
+    });
+
+
+    /*$('#src_text').keyup(function() {
+        var text = $(this).val();
+        var src_type = $('#src_type').val();
+        if (text.length < 2) {
+            $('.src_result').hide()
+        }
+        if (text.length > 2) {
+            $.ajax({
+                type: "POST",
+                url: '/inc/top_src.php',
+                data: 'text=' + text,
+                success: function(result) {
+                    if ($.trim(result) != "0") {
+                        $('.src_result').html(result);
+                        $('.src_result').show()
+                    } else {
+                        $('.src_result').html('');
+                        $('.src_result').hide()
+                    }
+                }
+            })
+        }
+    });
+    $('.src_button').click(function() {
+        if ($('#src_text').val() != "") {
+            $('#top_form').submit()
+        }
+    })*/
+	
+	jQuery(window).scroll(function(){
+		var testDiv = document.getElementById("sol-yapiskan-reklam");
+		if( $(this).scrollTop() > 20 ){testDiv.style.top = "10px";}else{testDiv.style.top = "60px";}
+		
+		
+		
+	});
+	
+	
+	
+	
+});
+
+function backPoll() {
+    $('#polls_stats').html('');
+    $('.poll_sec').css('opacity', '1');
+    $('.poll_sec').css('filter', 'alpha(opacity=1)');
+    $('.poll_sec').show()
+}
+
+function compSrc() {
+    $('#cmp_src_form').submit()
+}
+
+function getSearch(){
+
+		var text  = $.trim($('#src_text').val());
+
+		 function str_replace (search, replace, subject, count) {
+    	    var i = 0, j = 0, temp = '', repl = '', sl = 0, fl = 0,
+    	            f = [].concat(search),
+    	            r = [].concat(replace),
+    	            s = subject,
+    	            ra = r instanceof Array, sa = s instanceof Array;
+    	    s = [].concat(s);
+    	    if (count) {
+    	        this.window[count] = 0;
+    	    }
+    	
+    	    for (i=0, sl=s.length; i < sl; i++) {
+    	        if (s[i] === '') {
+    	            continue;
+    	        }
+    	        for (j=0, fl=f.length; j < fl; j++) {
+    	            temp = s[i]+'';
+    	            repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0];
+    	            s[i] = (temp).split(f[j]).join(repl);
+    	            if (count && s[i] !== temp) {
+    	                this.window[count] += (temp.length-s[i].length)/f[j].length;}
+    	        }
+    	    }
+    	    return sa ? 
+    	    s : s[0];
+    	}
+
+
+		var filtChar = ['I', 'ý', 'Ý', 'ç', 'Ç', 'Ü', 'ü', 'Ö', 'ö', 'þ', 'Þ', 'ð', 'Ð', ' ', '\'', '"', '?', '!', ',', ';', '.', '_'];
+    	var passChar = ['i', 'i', 'I', 'c', 'C', 'U', 'u', 'O', 'o', 's', 'S', 'g', 'G', '-', '', '', '', '', '', '', '', ''];
+   		
+   		text = str_replace(filtChar, passChar, text);
+   		text = text.replace(/[^a-zA-Z 0-9-]+/g, "").toLowerCase().replace(/[_|\s]+/g, "-");
+
+   		if (text != '') {
+
+   			 window.location = '/ara/'+text+'/';
+        	//return false;
+            //$('#top_search').attr('action',SECUREURL+'/ara/'+text);
+            //$('#top_search').submit();
+        }        
+
+	}
+
+	
