@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Haber Çekici - 59 Haber Kutusu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --red: #D32F2F; --red-dark: #B71C1C; --red-light: #FFEBEE;
+            --white: #FFFFFF; --gray-50: #FAFAFA; --gray-100: #F5F5F5;
+            --gray-200: #EEEEEE; --gray-300: #E0E0E0; --gray-600: #757575;
+            --gray-800: #424242; --gray-900: #212121;
+            --green: #2E7D32; --green-light: #E8F5E9;
+            --blue: #1565C0; --blue-light: #E3F2FD;
+            --orange: #E65100; --orange-light: #FFF3E0;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--gray-900); }
+        a { text-decoration: none; color: inherit; }
+
+        .admin-header {
+            background: var(--gray-900); color: var(--white); padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .admin-header h1 { font-size: 18px; font-weight: 700; }
+        .admin-header h1 span { color: var(--red); }
+        .header-links { display: flex; gap: 16px; align-items: center; }
+        .header-links a { color: var(--gray-600); font-size: 13px; transition: color 0.2s; }
+        .header-links a:hover { color: var(--white); }
+
+        .admin-menu-toggle{
+            display:none;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-300);
+            color: var(--gray-800);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 28px; }
+
+        .page-title {
+            font-size: 20px; font-weight: 800; margin-bottom: 24px;
+            padding-bottom: 12px; border-bottom: 3px solid var(--red);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .scrape-all-btn {
+            padding: 10px 24px; background: var(--green); color: var(--white);
+            border: none; border-radius: 6px; font-family: inherit; font-size: 13px;
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .scrape-all-btn:hover { background: #1B5E20; }
+        .scrape-all-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+
+        .card {
+            background: var(--white); border-radius: 8px; padding: 24px;
+            border: 1px solid var(--gray-200);
+        }
+        .card-title {
+            font-size: 15px; font-weight: 700; margin-bottom: 18px;
+            padding-bottom: 10px; border-bottom: 2px solid var(--red);
+        }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block; font-size: 11px; font-weight: 600; color: var(--gray-600);
+            margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%; padding: 9px 12px; border: 1.5px solid var(--gray-300); border-radius: 6px;
+            font-family: inherit; font-size: 13px; transition: border-color 0.2s; background: var(--white);
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--red); }
+        .form-hint { font-size: 10px; color: var(--gray-600); margin-top: 3px; }
+
+        .selector-section { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--gray-300); }
+        .selector-section h4 { font-size: 12px; font-weight: 700; color: var(--red); margin-bottom: 10px; }
+
+        .btn-submit {
+            width: 100%; padding: 11px; background: var(--red); color: var(--white);
+            border: none; border-radius: 6px; font-family: inherit; font-size: 13px;
+            font-weight: 700; cursor: pointer; transition: background 0.2s; margin-top: 6px;
+        }
+        .btn-submit:hover { background: var(--red-dark); }
+        .btn-cancel {
+            display: inline-block; width: 100%; text-align: center; padding: 9px;
+            margin-top: 6px; color: var(--gray-600); font-size: 12px; font-weight: 600;
+            border: 1.5px solid var(--gray-300); border-radius: 6px; transition: all 0.2s;
+        }
+        .btn-cancel:hover { border-color: var(--gray-800); color: var(--gray-800); }
+
+        .source-list { display: flex; flex-direction: column; gap: 12px; }
+        .source-card {
+            background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px;
+            padding: 16px; transition: box-shadow 0.2s;
+        }
+        .source-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .source-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .source-name { font-size: 14px; font-weight: 700; }
+        .source-badge {
+            display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .badge-active { background: var(--green-light); color: var(--green); }
+        .badge-inactive { background: var(--gray-200); color: var(--gray-600); }
+        .source-url { font-size: 11px; color: var(--gray-600); word-break: break-all; margin-bottom: 8px; }
+        .source-meta { display: flex; gap: 12px; font-size: 11px; color: var(--gray-600); margin-bottom: 10px; flex-wrap: wrap; }
+        .source-meta strong { color: var(--gray-800); }
+        .source-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .action-btn {
+            padding: 6px 12px; font-size: 11px; font-weight: 600; border-radius: 4px;
+            border: none; cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.8; }
+        .btn-scrape { background: var(--green-light); color: var(--green); }
+        .btn-edit { background: var(--blue-light); color: var(--blue); }
+        .btn-preview { background: var(--orange-light); color: var(--orange); }
+        .btn-delete { background: var(--red-light); color: var(--red); }
+        .btn-toggle { background: var(--gray-200); color: var(--gray-800); }
+
+        .result-box {
+            margin-top: 16px; padding: 14px; border-radius: 6px; font-size: 13px;
+            line-height: 1.6; display: none;
+        }
+        .result-success { background: var(--green-light); color: var(--green); border: 1px solid #A5D6A7; }
+        .result-error { background: var(--red-light); color: var(--red); border: 1px solid #EF9A9A; }
+
+        .preview-modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .preview-modal.active { display: flex; }
+        .preview-content {
+            background: var(--white); border-radius: 10px; max-width: 800px; width: 95%;
+            max-height: 85vh; overflow-y: auto; padding: 24px;
+        }
+        .preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+        .preview-header h3 { font-size: 16px; font-weight: 700; }
+        .preview-close {
+            background: var(--gray-200); border: none; width: 32px; height: 32px;
+            border-radius: 50%; font-size: 16px; cursor: pointer; font-weight: 700;
+        }
+        .preview-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .preview-actions .count { font-size: 12px; color: var(--gray-600); font-weight: 600; }
+        .btn-select-all, .btn-deselect-all {
+            padding: 6px 14px; font-size: 11px; font-weight: 600; border-radius: 4px;
+            border: 1.5px solid var(--gray-300); background: var(--white); cursor: pointer;
+            font-family: inherit; transition: all 0.2s;
+        }
+        .btn-select-all:hover { background: var(--green-light); border-color: var(--green); color: var(--green); }
+        .btn-deselect-all:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+        .btn-save-selected {
+            padding: 8px 20px; background: var(--green); color: var(--white);
+            border: none; border-radius: 6px; font-family: inherit; font-size: 13px;
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-save-selected:hover { background: #1B5E20; }
+        .btn-save-selected:disabled { opacity: 0.5; cursor: not-allowed; }
+        .preview-item {
+            padding: 10px 12px; border-bottom: 1px solid var(--gray-200);
+            display: flex; gap: 12px; align-items: center; border-radius: 6px;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .preview-item:hover { background: var(--gray-50); }
+        .preview-item.selected { background: var(--green-light); }
+        .preview-item.exists { opacity: 0.5; }
+        .preview-item:last-child { border-bottom: none; }
+        .preview-check { width: 20px; height: 20px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
+        .preview-img { width: 80px; height: 55px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: var(--gray-200); }
+        .preview-title { font-size: 13px; font-weight: 600; line-height: 1.4; }
+        .preview-desc { font-size: 11px; color: var(--gray-600); margin-top: 4px; }
+        .preview-cat { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: var(--blue-light); color: var(--blue); margin-top: 4px; }
+        .preview-date { font-size: 11px; color: var(--gray-600); margin-top: 4px; }
+        .preview-exists-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: var(--orange-light); color: var(--orange); margin-left: 4px; }
+
+        .loading-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4); z-index: 2000; align-items: center; justify-content: center;
+        }
+        .loading-overlay.active { display: flex; }
+        .loading-box {
+            background: var(--white); padding: 32px 40px; border-radius: 10px; text-align: center;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid var(--gray-300);
+            border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--gray-600); }
+        .empty-state h3 { margin-bottom: 8px; }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+            .container { padding: 16px; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header{
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .admin-menu-toggle{
+                display: inline-flex;
+            }
+            .header-links{
+                width: 100%;
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding-top: 6px;
+            }
+            .header-links.open{
+                display: flex;
+            }
+            .admin-header a{
+                font-size: 14px;
+            }
+            .container{
+                margin: 0;
+                padding: 18px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <h1><span>59</span> Haber Kutusu - Haber Çekici</h1>
+        <button type="button" class="admin-menu-toggle" id="adminMenuToggle" aria-label="Admin menü">&#9776;</button>
+        <div id="adminLinks" class="header-links">
+            <a href="/<%= adminPath %>">&#8592; Admin Panel</a>
+            <a href="/<%= adminPath %>/kunye" style="color:#AB47BC;font-weight:600;">Künye</a>
+            <a href="/<%= adminPath %>/hakkinda" style="color:#FFA726;font-weight:600;">Hakkında</a>
+            <a href="/<%= adminPath %>/ads" style="color:#42A5F5;font-weight:600;">Reklam (PC)</a>
+            <a href="/<%= adminPath %>/ads-mobile" style="color:#66BB6A;font-weight:600;">Reklam (Mobil)</a>
+            <a href="/<%= adminPath %>/ads-common" style="color:#FFB300;font-weight:600;">Reklam (Ortak)</a>
+            <a href="/">Siteye Dön</a>
+            <a href="/<%= adminPath %>/cikis" style="color:#ef5350;">Çıkış Yap</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-title">
+            <span>Haber Kaynakları</span>
+            <button class="scrape-all-btn" onclick="scrapeAll()" id="scrapeAllBtn">Tümünden Haber Çek</button>
+        </div>
+
+        <div id="globalResult" class="result-box"></div>
+
+        <div class="grid">
+            <div>
+                <div class="card">
+                    <h3 class="card-title"><%= editSource ? 'Kaynağı Düzenle' : 'Yeni Kaynak Ekle' %></h3>
+                    <form action="<%= editSource ? '/api/sources/' + editSource._id : '/api/sources' %>" method="POST" autocomplete="off">
+                        <div class="form-group">
+                            <label>Kaynak Adı</label>
+                            <input type="text" name="name" required placeholder="Örn: Hürriyet, NTV..." value="<%= editSource ? editSource.name : '' %>">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sayfa URL</label>
+                            <input type="url" name="url" required placeholder="https://www.example.com/haberler" value="<%= editSource ? editSource.url : '' %>">
+                            <div class="form-hint">Haberlerin listelendiği sayfanın URL'si</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Base URL (opsiyonel)</label>
+                            <input type="text" name="baseUrl" placeholder="https://www.example.com" value="<%= editSource ? (editSource.baseUrl || '') : '' %>">
+                            <div class="form-hint">Göreceli linkleri tamamlamak için ana domain (boş bırakılırsa URL'den alınır)</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Varsayılan Kategori</label>
+                            <select name="category" required>
+                                <% categories.forEach(cat => { %>
+                                    <option value="<%= cat %>" <%= editSource && editSource.category === cat ? 'selected' : '' %>><%= cat %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="selector-section">
+                            <h4>CSS Seçiciler</h4>
+
+                            <div class="form-group">
+                                <label>Haber Listesi (Kapsayıcı)</label>
+                                <input type="text" name="articleList" required placeholder="Örn: .news-card, article.item" value="<%= editSource ? editSource.selectors.articleList : '' %>">
+                                <div class="form-hint">Her bir haber öğesini seçen CSS seçici</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                <input type="text" name="title" required placeholder="Örn: h3 a, .title" value="<%= editSource ? editSource.selectors.title : '' %>">
+                                <div class="form-hint">Haber öğesi içindeki başlık seçicisi</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Açıklama (opsiyonel)</label>
+                                <input type="text" name="description" placeholder="Örn: .summary, p.desc" value="<%= editSource ? (editSource.selectors.description || '') : '' %>">
+                                <div class="form-hint">Kısa açıklama seçicisi (boş bırakılırsa başlık kullanılır)</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Görsel</label>
+                                <input type="text" name="image" placeholder="Örn: img, .thumb img" value="<%= editSource ? (editSource.selectors.image || '') : '' %>">
+                                <div class="form-hint">Görsel img etiketi seçicisi (data-src desteklenir)</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Link</label>
+                                <input type="text" name="link" required placeholder="Örn: a, h3 a" value="<%= editSource ? editSource.selectors.link : '' %>">
+                                <div class="form-hint">Haber detay linkinin a etiketi seçicisi</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kategori Etiketi (opsiyonel)</label>
+                                <input type="text" name="categorySelector" placeholder="Örn: .category, .badge" value="<%= editSource ? (editSource.selectors.category || '') : '' %>">
+                                <div class="form-hint">Sitedeki kategori etiketinin seçicisi (boşsa anahtar kelimelerle otomatik tespit edilir)</div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit"><%= editSource ? 'Güncelle' : 'Kaynak Ekle' %></button>
+                        <% if (editSource) { %>
+                            <a href="/<%= adminPath %>/scraper" class="btn-cancel">İptal</a>
+                        <% } %>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <% if (sources.length === 0) { %>
+                    <div class="empty-state">
+                        <h3>Henüz kaynak eklenmemiş</h3>
+                        <p>Sol panelden yeni haber kaynağı ekleyerek başlayın.</p>
+                    </div>
+                <% } else { %>
+                    <div class="source-list">
+                        <% sources.forEach(src => { %>
+                        <div class="source-card" id="source-<%= src._id %>">
+                            <div class="source-top">
+                                <span class="source-name"><%= src.name %></span>
+                                <span class="source-badge <%= src.active ? 'badge-active' : 'badge-inactive' %>">
+                                    <%= src.active ? 'Aktif' : 'Pasif' %>
+                                </span>
+                            </div>
+                            <div class="source-url"><%= src.url %></div>
+                            <div class="source-meta">
+                                <span>Kategori: <strong><%= src.category %></strong></span>
+                                <% if (src.lastScrapedAt) { %>
+                                    <span>Son çekim: <strong><%= new Date(src.lastScrapedAt).toLocaleString('tr-TR') %></strong></span>
+                                    <span>Çekilen: <strong><%= src.lastScrapedCount %> haber</strong></span>
+                                <% } else { %>
+                                    <span>Henüz çekim yapılmadı</span>
+                                <% } %>
+                            </div>
+                            <div class="source-actions">
+                                <button class="action-btn btn-scrape" onclick="scrapeOne('<%= src._id %>')">Haber Çek</button>
+                                <button class="action-btn btn-preview" onclick="previewSource('<%= src._id %>')">Önizle</button>
+                                <a href="/<%= adminPath %>/scraper?edit=<%= src._id %>" class="action-btn btn-edit">Düzenle</a>
+                                <form action="/api/sources/<%= src._id %>/toggle" method="POST" style="display:inline;">
+                                    <button type="submit" class="action-btn btn-toggle"><%= src.active ? 'Pasife Al' : 'Aktife Al' %></button>
+                                </form>
+                                <form action="/api/sources/<%= src._id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Bu kaynağı silmek istediğinize emin misiniz?')">
+                                    <button type="submit" class="action-btn btn-delete">Sil</button>
+                                </form>
+                            </div>
+                            <div id="result-<%= src._id %>" class="result-box"></div>
+                        </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h3 id="previewTitle">Önizleme</h3>
+                <div class="preview-actions">
+                    <span class="count" id="selectedCount">0 seçili</span>
+                    <button class="btn-select-all" onclick="selectAll()">Tümünü Seç</button>
+                    <button class="btn-deselect-all" onclick="deselectAll()">Seçimi Kaldır</button>
+                    <button class="btn-save-selected" id="btnSaveSelected" onclick="saveSelected()">Seçilenleri Kaydet</button>
+                    <button class="preview-close" onclick="closePreview()">×</button>
+                </div>
+            </div>
+            <div id="previewBody"></div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <div>Haberler çekiliyor...</div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var adminMenuToggle = document.getElementById('adminMenuToggle');
+            var adminLinks = document.getElementById('adminLinks');
+            if (!adminMenuToggle || !adminLinks) return;
+            adminMenuToggle.addEventListener('click', function() {
+                adminLinks.classList.toggle('open');
+            });
+            window.addEventListener('resize', function() {
+                if ((window.innerWidth || document.documentElement.clientWidth) > 768) {
+                    adminLinks.classList.remove('open');
+                }
+            });
+        })();
+
+        let currentSourceId = null;
+        let currentArticles = [];
+        let existingTitles = new Set();
+        let existingNewsMap = new Map();
+
+        function showLoading(msg) {
+            document.querySelector('.loading-box div:last-child').textContent = msg || 'Haberler çekiliyor...';
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+
+        function showResult(elId, msg, isError) {
+            const el = document.getElementById(elId);
+            el.className = 'result-box ' + (isError ? 'result-error' : 'result-success');
+            el.innerHTML = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 8000);
+        }
+
+        function updateSelectedCount() {
+            const checks = document.querySelectorAll('.preview-check:checked');
+            const count = checks.length;
+            document.getElementById('selectedCount').textContent = count + ' seçili';
+            document.getElementById('btnSaveSelected').disabled = count === 0;
+        }
+
+        function toggleItem(idx) {
+            const cb = document.getElementById('check-' + idx);
+            if (cb && !cb.disabled) {
+                cb.checked = !cb.checked;
+                cb.closest('.preview-item').classList.toggle('selected', cb.checked);
+                updateSelectedCount();
+            }
+        }
+
+        function selectAll() {
+            document.querySelectorAll('.preview-check:not(:disabled)').forEach(cb => {
+                cb.checked = true;
+                cb.closest('.preview-item').classList.add('selected');
+            });
+            updateSelectedCount();
+        }
+
+        function deselectAll() {
+            document.querySelectorAll('.preview-check').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.preview-item').classList.remove('selected');
+            });
+            updateSelectedCount();
+        }
+
+        function renderArticles(articles, sourceId) {
+            currentSourceId = sourceId;
+            currentArticles = articles;
+
+            let html = '';
+            if (articles.length === 0) {
+                html = '<div class="empty-state"><p>Haber bulunamadı. Seçicileri kontrol edin.</p></div>';
+            } else {
+                articles.forEach((a, i) => {
+                    const exists = existingTitles.has(a.title);
+                    html += '<div class="preview-item' + (exists ? ' exists' : '') + '" onclick="toggleItem(' + i + ')">';
+                    html += '<input type="checkbox" class="preview-check" id="check-' + i + '"' + (exists ? ' disabled' : '') + ' onclick="event.stopPropagation(); this.closest(\'.preview-item\').classList.toggle(\'selected\', this.checked); updateSelectedCount();">';
+                    if (a.image) {
+                        html += '<img src="' + a.image + '" class="preview-img" onerror="this.style.display=\'none\'">';
+                    }
+                    html += '<div style="flex:1;min-width:0;"><div class="preview-title">' + a.title + '</div>';
+                    if (a.description && a.description !== a.title) {
+                        html += '<div class="preview-desc">' + a.description.substring(0, 120) + '</div>';
+                    }
+                    html += '<span class="preview-cat">' + (a.category || 'Gündem') + '</span>';
+                    const sourceDate = a.publishedAt || (existingNewsMap.get(a.title) && existingNewsMap.get(a.title).publishedAt);
+                    if (sourceDate) {
+                        const publishedDate = new Date(sourceDate).toLocaleString('tr-TR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        html += '<div class="preview-date">Kaynak yayın tarihi: ' + publishedDate + '</div>';
+                    } else {
+                        html += '<div class="preview-date">Kaynak yayın tarihi: Bulunamadı</div>';
+                    }
+                    if (exists) html += '<span class="preview-exists-tag">Zaten mevcut</span>';
+                    html += '</div></div>';
+                });
+            }
+            document.getElementById('previewBody').innerHTML = html;
+            updateSelectedCount();
+        }
+
+        async function scrapeOne(id) {
+            showLoading('Haberler çekiliyor...');
+            try {
+                const [previewRes, newsRes] = await Promise.all([
+                    fetch('/api/sources/' + id + '/preview'),
+                    fetch('/api/news')
+                ]);
+                const previewData = await previewRes.json();
+                const newsData = await newsRes.json();
+                hideLoading();
+
+                if (previewData.error) {
+                    showResult('result-' + id, 'Hata: ' + previewData.error, true);
+                    return;
+                }
+
+                existingTitles = new Set(newsData.map(n => n.title));
+                existingNewsMap = new Map(newsData.map(n => [n.title, n]));
+                const articles = previewData.articles || [];
+                const newCount = articles.filter(a => !existingTitles.has(a.title)).length;
+
+                document.getElementById('previewTitle').textContent = articles.length + ' haber bulundu (' + newCount + ' yeni)';
+                renderArticles(articles, id);
+                document.getElementById('previewModal').classList.add('active');
+            } catch (err) {
+                hideLoading();
+                showResult('result-' + id, 'Bağlantı hatası: ' + err.message, true);
+            }
+        }
+
+        async function saveSelected() {
+            const checks = document.querySelectorAll('.preview-check:checked');
+            if (checks.length === 0) return;
+
+            const selected = [];
+            checks.forEach(cb => {
+                const idx = parseInt(cb.id.replace('check-', ''));
+                selected.push(currentArticles[idx]);
+            });
+
+            showLoading('Seçilen haberler kaydediliyor...');
+            closePreview();
+
+            try {
+                const res = await fetch('/api/sources/' + currentSourceId + '/save-selected', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ articles: selected })
+                });
+                const data = await res.json();
+                hideLoading();
+
+                if (data.error) {
+                    showResult('result-' + currentSourceId, 'Hata: ' + data.error, true);
+                } else {
+                    showResult('result-' + currentSourceId, data.saved + ' haber kaydedildi.', false);
+                    if (data.saved > 0) setTimeout(() => location.reload(), 2000);
+                }
+            } catch (err) {
+                hideLoading();
+                showResult('result-' + currentSourceId, 'Kaydetme hatası: ' + err.message, true);
+            }
+        }
+
+        async function scrapeAll() {
+            const btn = document.getElementById('scrapeAllBtn');
+            btn.disabled = true;
+            showLoading('Tüm kaynaklar taranıyor...');
+            try {
+                const res = await fetch('/api/sources/scrape-all', { method: 'POST' });
+                const data = await res.json();
+                hideLoading();
+                btn.disabled = false;
+                if (data.error) {
+                    showResult('globalResult', 'Hata: ' + data.error, true);
+                } else {
+                    let msg = '<strong>Çekim tamamlandı:</strong><br>';
+                    let totalSaved = 0;
+                    data.results.forEach(r => {
+                        if (r.error) {
+                            msg += r.source + ': Hata - ' + r.error + '<br>';
+                        } else {
+                            msg += r.source + ': ' + r.total + ' bulundu, ' + r.saved + ' kaydedildi<br>';
+                            totalSaved += r.saved;
+                        }
+                    });
+                    showResult('globalResult', msg, false);
+                    if (totalSaved > 0) setTimeout(() => location.reload(), 3000);
+                }
+            } catch (err) {
+                hideLoading();
+                btn.disabled = false;
+                showResult('globalResult', 'Bağlantı hatası: ' + err.message, true);
+            }
+        }
+
+        async function previewSource(id) {
+            showLoading('Önizleme yükleniyor...');
+            try {
+                const [previewRes, newsRes] = await Promise.all([
+                    fetch('/api/sources/' + id + '/preview'),
+                    fetch('/api/news')
+                ]);
+                const data = await previewRes.json();
+                const newsData = await newsRes.json();
+                hideLoading();
+
+                if (data.error) {
+                    alert('Hata: ' + data.error);
+                    return;
+                }
+
+                existingTitles = new Set(newsData.map(n => n.title));
+                existingNewsMap = new Map(newsData.map(n => [n.title, n]));
+                const articles = data.articles || [];
+                const newCount = articles.filter(a => !existingTitles.has(a.title)).length;
+
+                document.getElementById('previewTitle').textContent = 'Önizleme - ' + articles.length + ' haber (' + newCount + ' yeni)';
+                renderArticles(articles, id);
+                document.getElementById('previewModal').classList.add('active');
+            } catch (err) {
+                hideLoading();
+                alert('Bağlantı hatası: ' + err.message);
+            }
+        }
+
+        function closePreview() { document.getElementById('previewModal').classList.remove('active'); }
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) closePreview();
+        });
+    </script>
+</body>
+</html>

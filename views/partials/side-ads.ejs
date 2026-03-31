@@ -1,0 +1,168 @@
+<% const leftList = Array.isArray(leftAds) ? leftAds : []; %>
+<% const rightList = Array.isArray(rightAds) ? rightAds : []; %>
+<% const topList = Array.isArray(topAds) ? topAds : []; %>
+<% const bottomList = Array.isArray(bottomAds) ? bottomAds : []; %>
+<% const customList = Array.isArray(customAds) ? customAds : []; %>
+
+<% if (leftList.length > 0) { %>
+<div class="side-ad-slot side-ad-left scroll-locked">
+    <% leftList.forEach((ad, i) => { %>
+    <% let deviceClass = ''; if (ad.deviceTarget === 'desktop') { deviceClass = 'ad-desktop-only'; } if (ad.deviceTarget === 'mobile') { deviceClass = 'ad-mobile-only'; } %>
+    <% let orientClass = 'ad-orient-' + (ad.orientation || 'vertical'); %>
+    <a
+        href="<%= ad.link || '#' %>"
+        class="side-ad <%= i === 0 ? 'active' : '' %> <%= deviceClass %> <%= orientClass %>"
+        data-rotate-ms="<%= (ad.rotateSeconds || 7) * 1000 %>"
+        style="--ad-w:<%= ad.width || 160 %>px;--ad-h:<%= ad.height || 600 %>px;--ad-mw:<%= ad.mobileWidth || 320 %>px;--ad-mh:<%= ad.mobileHeight || 250 %>px;"
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        aria-label="Sol reklam alanı">
+        <% const adMedia = ad.media || ad.image; %>
+        <% if ((ad.mediaType === 'video') && adMedia) { %>
+            <video src="<%= adMedia %>" autoplay muted loop playsinline preload="metadata"></video>
+        <% } else { %>
+            <img src="<%= adMedia %>" alt="<%= ad.name || 'Reklam' %>">
+        <% } %>
+    </a>
+    <% }) %>
+</div>
+<% } %>
+
+<% if (rightList.length > 0) { %>
+<div class="side-ad-slot side-ad-right scroll-locked">
+    <% rightList.forEach((ad, i) => { %>
+    <% let deviceClass = ''; if (ad.deviceTarget === 'desktop') { deviceClass = 'ad-desktop-only'; } if (ad.deviceTarget === 'mobile') { deviceClass = 'ad-mobile-only'; } %>
+    <% let orientClass = 'ad-orient-' + (ad.orientation || 'vertical'); %>
+    <a
+        href="<%= ad.link || '#' %>"
+        class="side-ad <%= i === 0 ? 'active' : '' %> <%= deviceClass %> <%= orientClass %>"
+        data-rotate-ms="<%= (ad.rotateSeconds || 7) * 1000 %>"
+        style="--ad-w:<%= ad.width || 160 %>px;--ad-h:<%= ad.height || 600 %>px;--ad-mw:<%= ad.mobileWidth || 320 %>px;--ad-mh:<%= ad.mobileHeight || 250 %>px;"
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        aria-label="Sağ reklam alanı">
+        <% const adMedia = ad.media || ad.image; %>
+        <% if ((ad.mediaType === 'video') && adMedia) { %>
+            <video src="<%= adMedia %>" autoplay muted loop playsinline preload="metadata"></video>
+        <% } else { %>
+            <img src="<%= adMedia %>" alt="<%= ad.name || 'Reklam' %>">
+        <% } %>
+    </a>
+    <% }) %>
+</div>
+<% } %>
+
+<% if (topList.length > 0) { %>
+<div class="side-ad-slot side-ad-top">
+    <% topList.forEach((ad, i) => { %>
+    <% let deviceClass = ''; if (ad.deviceTarget === 'desktop') { deviceClass = 'ad-desktop-only'; } if (ad.deviceTarget === 'mobile') { deviceClass = 'ad-mobile-only'; } %>
+    <% let orientClass = 'ad-orient-' + (ad.orientation || 'vertical'); %>
+    <a
+        href="<%= ad.link || '#' %>"
+        class="side-ad <%= i === 0 ? 'active' : '' %> <%= deviceClass %> <%= orientClass %>"
+        data-rotate-ms="<%= (ad.rotateSeconds || 7) * 1000 %>"
+        style="--ad-w:<%= ad.width || 350 %>px;--ad-h:<%= ad.height || 250 %>px;--ad-mw:<%= ad.mobileWidth || 320 %>px;--ad-mh:<%= ad.mobileHeight || 250 %>px;"
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        aria-label="Üst reklam alanı">
+        <% const adMedia = ad.media || ad.image; %>
+        <% if ((ad.mediaType === 'video') && adMedia) { %>
+            <video src="<%= adMedia %>" autoplay muted loop playsinline preload="metadata"></video>
+        <% } else { %>
+            <img src="<%= adMedia %>" alt="<%= ad.name || 'Reklam' %>">
+        <% } %>
+    </a>
+    <% }) %>
+</div>
+<% } %>
+
+<% if (bottomList.length > 0) { %>
+<div class="side-ad-slot side-ad-bottom">
+    <% bottomList.forEach((ad, i) => { %>
+    <% let deviceClass = ''; if (ad.deviceTarget === 'desktop') { deviceClass = 'ad-desktop-only'; } if (ad.deviceTarget === 'mobile') { deviceClass = 'ad-mobile-only'; } %>
+    <% let orientClass = 'ad-orient-' + (ad.orientation || 'vertical'); %>
+    <a
+        href="<%= ad.link || '#' %>"
+        class="side-ad <%= i === 0 ? 'active' : '' %> <%= deviceClass %> <%= orientClass %>"
+        data-rotate-ms="<%= (ad.rotateSeconds || 7) * 1000 %>"
+        style="--ad-w:<%= ad.width || 728 %>px;--ad-h:<%= ad.height || 90 %>px;--ad-mw:<%= ad.mobileWidth || 320 %>px;--ad-mh:<%= ad.mobileHeight || 120 %>px;"
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        aria-label="Alt reklam alanı">
+        <% const adMedia = ad.media || ad.image; %>
+        <% if ((ad.mediaType === 'video') && adMedia) { %>
+            <video src="<%= adMedia %>" autoplay muted loop playsinline preload="metadata"></video>
+        <% } else { %>
+            <img src="<%= adMedia %>" alt="<%= ad.name || 'Reklam' %>">
+        <% } %>
+    </a>
+    <% }) %>
+</div>
+<% } %>
+
+<% if (customList.length > 0) { %>
+    <% customList.forEach((ad, idx) => { %>
+    <% const fallbackStyle = 'top:' + (ad.customTop || 180) + 'px;left:' + (ad.customLeft || 12) + 'px;z-index:' + (ad.customZIndex || 60) + ';'; %>
+    <% let deviceClass = ''; if (ad.deviceTarget === 'desktop') { deviceClass = 'ad-desktop-only'; } if (ad.deviceTarget === 'mobile') { deviceClass = 'ad-mobile-only'; } %>
+    <% let orientClass = 'ad-orient-' + (ad.orientation || 'vertical'); %>
+    <div class="side-ad-slot side-ad-custom" style="<%= ad.customStyles || fallbackStyle %>" data-custom-group="<%= idx %>">
+        <a
+            href="<%= ad.link || '#' %>"
+            class="side-ad active <%= deviceClass %> <%= orientClass %>"
+            data-rotate-ms="<%= (ad.rotateSeconds || 7) * 1000 %>"
+            style="--ad-w:<%= ad.width || 160 %>px;--ad-h:<%= ad.height || 600 %>px;--ad-mw:<%= ad.mobileWidth || 320 %>px;--ad-mh:<%= ad.mobileHeight || 250 %>px;"
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            aria-label="Özel reklam alanı">
+            <% const adMedia = ad.media || ad.image; %>
+            <% if ((ad.mediaType === 'video') && adMedia) { %>
+                <video src="<%= adMedia %>" autoplay muted loop playsinline preload="metadata"></video>
+            <% } else { %>
+                <img src="<%= adMedia %>" alt="<%= ad.name || 'Reklam' %>">
+            <% } %>
+        </a>
+    </div>
+    <% }) %>
+<% } %>
+
+<script>
+    (function() {
+        const slots = document.querySelectorAll('.side-ad-slot');
+        if (!slots.length) return;
+
+        function isAllowedForViewport(el) {
+            const w = window.innerWidth || document.documentElement.clientWidth;
+            if (w > 1024 && el.classList.contains('ad-mobile-only')) return false;
+            if (w <= 1024 && el.classList.contains('ad-desktop-only')) return false;
+            return true;
+        }
+
+        slots.forEach((slot) => {
+            const all = Array.from(slot.querySelectorAll('.side-ad'));
+            const items = all.filter(isAllowedForViewport);
+            if (items.length === 0) return;
+            if (items.length === 1) {
+                all.forEach(el => el.classList.remove('active'));
+                items[0].classList.add('active');
+                return;
+            }
+
+            let index = 0;
+            let timer = null;
+            all.forEach(el => el.classList.remove('active'));
+            items[0].classList.add('active');
+
+            function scheduleNext() {
+                const cur = items[index];
+                const ms = parseInt(cur.dataset.rotateMs || '7000', 10);
+                timer = setTimeout(() => {
+                    cur.classList.remove('active');
+                    index = (index + 1) % items.length;
+                    items[index].classList.add('active');
+                    scheduleNext();
+                }, ms);
+            }
+            scheduleNext();
+        });
+    })();
+</script>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>59 Haber Kutusu - Tekirdağ Haber</title>
+    <meta name="description" content="Tekirdağ ve Trakya'dan son dakika haberler, gündem, ekonomi, spor haberleri.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="home-page">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="container topbar-inner">
+            <span class="topbar-date" id="currentDate"></span>
+            <div class="topbar-social">
+                <a href="https://www.facebook.com/people/Habe59/61581999440146/" target="_blank" aria-label="Facebook"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                <a href="https://www.instagram.com/59haberkutusu/" target="_blank" aria-label="Instagram"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                <a href="https://wa.me/905334773639" target="_blank" aria-label="WhatsApp İhbar Hattı"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <img src="/logo.png" alt="59 Haber Kutusu" class="logo-img">
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menü">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="nav" id="mainNav">
+                <a href="/" class="nav-link active">Ana Sayfa</a>
+                <a href="/kategori/son-dakika" class="nav-link">Son Dakika</a>
+                <a href="/kategori/gundem" class="nav-link">Gündem</a>
+                <a href="/kategori/ekonomi" class="nav-link">Ekonomi</a>
+                <a href="/kategori/spor" class="nav-link">Spor</a>
+                <a href="/kategori/siyaset" class="nav-link">Siyaset</a>
+                <a href="/kategori/yasam" class="nav-link">Yaşam</a>
+            </nav>
+        </div>
+    </header>
+    <%- include('partials/side-ads') %>
+
+    <!-- Breaking News Ticker -->
+    <% if (heroNews.length > 0) { %>
+    <div class="ticker">
+        <div class="container ticker-inner">
+            <span class="ticker-badge">SON DAKİKA</span>
+            <div class="ticker-text">
+                <span><%= heroNews.map(n => n.title).join(' \u2022 ') %></span>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Hero Slider -->
+    <% if (heroNews.length > 0) { %>
+    <section class="hero-slider">
+        <div class="slider-track" id="sliderTrack">
+            <% heroNews.forEach((item, i) => { %>
+            <div class="slide <%= i === 0 ? 'active' : '' %>">
+                <a href="/haber/<%= item.slug || item._id %>">
+                    <div class="slide-img-wrap">
+                        <img src="<%= item.image %>" alt="<%= item.title %>">
+                        <div class="slide-overlay">
+                            <span class="category-badge"><%= item.category %></span>
+                            <h2 class="slide-title"><%= item.title %></h2>
+                            <p class="slide-desc"><%= item.description %></p>
+                            <p class="slide-meta"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <% }) %>
+        </div>
+        <button class="slider-btn slider-prev" id="sliderPrev" aria-label="Önceki">&#10094;</button>
+        <button class="slider-btn slider-next" id="sliderNext" aria-label="Sonraki">&#10095;</button>
+        <div class="slider-dots" id="sliderDots">
+            <% heroNews.forEach((item, i) => { %>
+            <button class="dot <%= i === 0 ? 'active' : '' %>" data-index="<%= i %>"></button>
+            <% }) %>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Çorlu Hava Durumu -->
+    <section class="weather-widget" id="weatherCorlu">
+        <div class="container">
+            <div class="weather-box">
+                <div class="weather-header">
+                    <span class="weather-title">&#9728; Çorlu Hava Durumu</span>
+                    <span class="weather-update" id="weatherUpdate"></span>
+                </div>
+                <div class="weather-content" id="weatherContent">
+                    <div class="weather-loading" id="weatherLoading">Yükleniyor...</div>
+                    <div class="weather-data" id="weatherData" style="display:none;">
+                        <div class="weather-now">
+                            <div class="weather-main">
+                                <span class="weather-icon" id="weatherIcon" aria-hidden="true">&#9729;</span>
+                                <div>
+                                    <span class="weather-temp" id="weatherTemp">--</span>
+                                    <span class="weather-unit">°C</span>
+                                </div>
+                            </div>
+                            <div class="weather-detail">
+                                <span class="weather-desc" id="weatherDesc">--</span>
+                                <span class="weather-meta"><span id="weatherHumidity">--</span> nem · <span id="weatherWind">--</span> rüzgar</span>
+                            </div>
+                        </div>
+                        <div class="weather-week-label">Bir haftalık rapor</div>
+                        <div class="weather-week" id="weatherWeek"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Son Dakika Section -->
+    <% if (sonDakika.length > 0) { %>
+    <section class="section section-sondakika" id="son-dakika">
+        <div class="container">
+            <div class="section-header">
+                <a href="/kategori/son-dakika" class="section-title-link">
+                    <h2 class="section-title">Son Dakika</h2>
+                    <span class="section-count"><%= sonDakikaCount %> haber</span>
+                </a>
+                <a href="/kategori/son-dakika" class="see-all">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="news-grid">
+                <% sonDakika.forEach(item => { %>
+                <article class="news-card">
+                    <a href="/haber/<%= item.slug || item._id %>">
+                        <div class="card-img">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-date"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                            <h3 class="card-title"><%= item.title %></h3>
+                            <p class="card-desc"><%= item.description %></p>
+                        </div>
+                    </a>
+                </article>
+                <% }) %>
+            </div>
+            <div class="section-more">
+                <a href="/kategori/son-dakika" class="more-btn">Son Dakika Haberlerinin Tamamı &rarr;</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Gündem Section -->
+    <% if (gundem.length > 0) { %>
+    <section class="section" id="gundem">
+        <div class="container">
+            <div class="section-header">
+                <a href="/kategori/gundem" class="section-title-link">
+                    <h2 class="section-title">Gündem</h2>
+                    <span class="section-count"><%= gundemCount %> haber</span>
+                </a>
+                <a href="/kategori/gundem" class="see-all">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="news-grid">
+                <% gundem.forEach(item => { %>
+                <article class="news-card">
+                    <a href="/haber/<%= item.slug || item._id %>">
+                        <div class="card-img">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-date"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                            <h3 class="card-title"><%= item.title %></h3>
+                            <p class="card-desc"><%= item.description %></p>
+                        </div>
+                    </a>
+                </article>
+                <% }) %>
+            </div>
+            <div class="section-more">
+                <a href="/kategori/gundem" class="more-btn">Gündem Haberlerinin Tamamı &rarr;</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Ekonomi Section -->
+    <% if (ekonomi.length > 0) { %>
+    <section class="section section-alt" id="ekonomi">
+        <div class="container">
+            <div class="section-header">
+                <a href="/kategori/ekonomi" class="section-title-link">
+                    <h2 class="section-title">Ekonomi</h2>
+                    <span class="section-count"><%= ekonomiCount %> haber</span>
+                </a>
+                <a href="/kategori/ekonomi" class="see-all">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="news-grid">
+                <% ekonomi.forEach(item => { %>
+                <article class="news-card">
+                    <a href="/haber/<%= item.slug || item._id %>">
+                        <div class="card-img">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-date"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                            <h3 class="card-title"><%= item.title %></h3>
+                            <p class="card-desc"><%= item.description %></p>
+                        </div>
+                    </a>
+                </article>
+                <% }) %>
+            </div>
+            <div class="section-more">
+                <a href="/kategori/ekonomi" class="more-btn">Ekonomi Haberlerinin Tamamı &rarr;</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Spor Section -->
+    <% if (spor.length > 0) { %>
+    <section class="section" id="spor">
+        <div class="container">
+            <div class="section-header">
+                <a href="/kategori/spor" class="section-title-link">
+                    <h2 class="section-title">Spor</h2>
+                    <span class="section-count"><%= sporCount %> haber</span>
+                </a>
+                <a href="/kategori/spor" class="see-all">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="news-grid">
+                <% spor.forEach(item => { %>
+                <article class="news-card">
+                    <a href="/haber/<%= item.slug || item._id %>">
+                        <div class="card-img">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-date"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                            <h3 class="card-title"><%= item.title %></h3>
+                            <p class="card-desc"><%= item.description %></p>
+                        </div>
+                    </a>
+                </article>
+                <% }) %>
+            </div>
+            <div class="section-more">
+                <a href="/kategori/spor" class="more-btn">Spor Haberlerinin Tamamı &rarr;</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Siyaset Section -->
+    <% if (siyaset.length > 0) { %>
+    <section class="section section-alt" id="siyaset">
+        <div class="container">
+            <div class="section-header">
+                <a href="/kategori/siyaset" class="section-title-link">
+                    <h2 class="section-title">Siyaset</h2>
+                    <span class="section-count"><%= siyasetCount %> haber</span>
+                </a>
+                <a href="/kategori/siyaset" class="see-all">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="news-grid">
+                <% siyaset.forEach(item => { %>
+                <article class="news-card">
+                    <a href="/haber/<%= item.slug || item._id %>">
+                        <div class="card-img">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-date"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                            <h3 class="card-title"><%= item.title %></h3>
+                            <p class="card-desc"><%= item.description %></p>
+                        </div>
+                    </a>
+                </article>
+                <% }) %>
+            </div>
+            <div class="section-more">
+                <a href="/kategori/siyaset" class="more-btn">Siyaset Haberlerinin Tamamı &rarr;</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Yaşam Section -->
+    <% if (yasam.length > 0) { %>
+    <section class="section" id="yasam">
+        <div class="container">
+            <div class="section-header">
+                <a href="/kategori/yasam" class="section-title-link">
+                    <h2 class="section-title">Yaşam</h2>
+                    <span class="section-count"><%= yasamCount %> haber</span>
+                </a>
+                <a href="/kategori/yasam" class="see-all">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="news-grid">
+                <% yasam.forEach(item => { %>
+                <article class="news-card">
+                    <a href="/haber/<%= item.slug || item._id %>">
+                        <div class="card-img">
+                            <img src="<%= item.image %>" alt="<%= item.title %>">
+                        </div>
+                        <div class="card-body">
+                            <span class="card-date"><%= item.createdAt.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                            <h3 class="card-title"><%= item.title %></h3>
+                            <p class="card-desc"><%= item.description %></p>
+                        </div>
+                    </a>
+                </article>
+                <% }) %>
+            </div>
+            <div class="section-more">
+                <a href="/kategori/yasam" class="more-btn">Yaşam Haberlerinin Tamamı &rarr;</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="/logo.png" alt="59 Haber Kutusu" class="footer-logo">
+                    <p>Tekirdağ ve Trakya'nın güvenilir haber kaynağı. Gündem, ekonomi, spor ve yaşam haberleri.</p>
+                    <div class="footer-social">
+                        <a href="https://www.facebook.com/people/Habe59/61581999440146/" target="_blank" aria-label="Facebook"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                        <a href="https://www.instagram.com/59haberkutusu/" target="_blank" aria-label="Instagram"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                        <a href="https://wa.me/905334773639" target="_blank" aria-label="WhatsApp İhbar Hattı"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Kategoriler</h4>
+                    <a href="/kategori/son-dakika">Son Dakika</a><a href="/kategori/gundem">Gündem</a><a href="/kategori/ekonomi">Ekonomi</a><a href="/kategori/spor">Spor</a>
+                    <a href="/kategori/siyaset">Siyaset</a><a href="/kategori/yasam">Yaşam</a><a href="/kategori/saglik">Sağlık</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Kurumsal</h4>
+                    <a href="/hakkinda">Hakkında</a>
+                    <a href="/kunye">Künye</a>
+                    <a href="/telif-hakki">Telif Hakkı</a>
+                </div>
+                <div class="footer-links">
+                    <h4>İletişim</h4>
+                    <p>Tekirdağ</p>
+                    <p>+90 533 477 36 39</p>
+                    <a href="https://wa.me/905334773639" target="_blank" style="color:#4CAF50;font-weight:600;">WhatsApp İhbar Hattı</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 <strong>59 Haber Kutusu</strong>. Tüm Hakları Saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+        const days = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+        const now = new Date();
+        document.getElementById('currentDate').textContent =
+            days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('mainNav').classList.toggle('open');
+            this.classList.toggle('active');
+        });
+
+        // Hero Slider
+        (function() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            const prev = document.getElementById('sliderPrev');
+            const next = document.getElementById('sliderNext');
+            if (!slides.length) return;
+
+            let current = 0;
+            let timer;
+
+            function goTo(index) {
+                slides[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                current = (index + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+            }
+
+            function autoPlay() {
+                timer = setInterval(function() { goTo(current + 1); }, 5000);
+            }
+
+            function resetTimer() {
+                clearInterval(timer);
+                autoPlay();
+            }
+
+            if (prev) prev.addEventListener('click', function() { goTo(current - 1); resetTimer(); });
+            if (next) next.addEventListener('click', function() { goTo(current + 1); resetTimer(); });
+            dots.forEach(function(dot) {
+                dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index)); resetTimer(); });
+            });
+
+            autoPlay();
+
+            // Touch/swipe support
+            let startX = 0;
+            const track = document.getElementById('sliderTrack');
+            if (track) {
+                track.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; });
+                track.addEventListener('touchend', function(e) {
+                    const diff = startX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) goTo(current + 1);
+                        else goTo(current - 1);
+                        resetTimer();
+                    }
+                });
+            }
+        })();
+
+        // Çorlu Hava Durumu + Bir haftalık rapor (Open-Meteo API)
+        (function() {
+            var lat = 41.1592;
+            var lon = 27.8000;
+            var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FIstanbul&forecast_days=7';
+            var loading = document.getElementById('weatherLoading');
+            var dataEl = document.getElementById('weatherData');
+            var tempEl = document.getElementById('weatherTemp');
+            var iconEl = document.getElementById('weatherIcon');
+            var descEl = document.getElementById('weatherDesc');
+            var humidityEl = document.getElementById('weatherHumidity');
+            var windEl = document.getElementById('weatherWind');
+            var updateEl = document.getElementById('weatherUpdate');
+            var weekEl = document.getElementById('weatherWeek');
+            var dayNames = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+            var weatherCodes = { 0: { desc: 'Açık', icon: '\u2600' }, 1: { desc: 'Az bulutlu', icon: '\uD83C\uDF24' }, 2: { desc: 'Parçalı bulutlu', icon: '\u26C5' }, 3: { desc: 'Kapalı', icon: '\u2601' }, 45: { desc: 'Sis', icon: '\uD83C\uDF2B' }, 48: { desc: 'Sis', icon: '\uD83C\uDF2B' }, 51: { desc: 'Çisenti', icon: '\uD83C\uDF27' }, 53: { desc: 'Çisenti', icon: '\uD83C\uDF27' }, 55: { desc: 'Çisenti', icon: '\uD83C\uDF27' }, 61: { desc: 'Yağmurlu', icon: '\uD83C\uDF27' }, 63: { desc: 'Yağmurlu', icon: '\uD83C\uDF27' }, 65: { desc: 'Şiddetli yağmur', icon: '\u26C8' }, 71: { desc: 'Karlı', icon: '\u2744' }, 73: { desc: 'Karlı', icon: '\u2744' }, 75: { desc: 'Kar', icon: '\u2744' }, 77: { desc: 'Kar taneleri', icon: '\u2744' }, 80: { desc: 'Yağmur', icon: '\uD83C\uDF27' }, 81: { desc: 'Yağmur', icon: '\uD83C\uDF27' }, 82: { desc: 'Şiddetli yağmur', icon: '\u26C8' }, 85: { desc: 'Kar', icon: '\u2744' }, 86: { desc: 'Kar', icon: '\u2744' }, 95: { desc: 'Gök gürültülü', icon: '\u26C8' }, 96: { desc: 'Gök gürültülü', icon: '\u26C8' }, 99: { desc: 'Fırtına', icon: '\u26C8' } };
+            function getWeatherInfo(code) { return weatherCodes[code] || { desc: 'Bilinmiyor', icon: '\uD83C\uDF21' }; }
+            fetch(url).then(function(r) { return r.json(); }).then(function(json) {
+                if (loading) loading.style.display = 'none';
+                if (dataEl) dataEl.style.display = 'block';
+                var c = json.current;
+                var daily = json.daily;
+                if (c) {
+                    if (tempEl) tempEl.textContent = Math.round(c.temperature_2m);
+                    var info = getWeatherInfo(c.weather_code);
+                    if (iconEl) iconEl.textContent = info.icon;
+                    if (descEl) descEl.textContent = info.desc;
+                    if (humidityEl) humidityEl.textContent = '%' + c.relative_humidity_2m;
+                    if (windEl) windEl.textContent = c.wind_speed_10m + ' km/s';
+                }
+                if (updateEl) updateEl.textContent = 'Güncel';
+                if (weekEl && daily && daily.time && daily.time.length) {
+                    var html = '';
+                    for (var i = 0; i < daily.time.length && i < 7; i++) {
+                        var dateStr = daily.time[i];
+                        var d = new Date(dateStr + 'T12:00:00');
+                        var dayName = dayNames[d.getDay()];
+                        var dayNum = d.getDate();
+                        var code = (daily.weathercode && daily.weathercode[i]) || 0;
+                        var info = getWeatherInfo(code);
+                        var maxT = daily.temperature_2m_max != null ? Math.round(daily.temperature_2m_max[i]) : '--';
+                        var minT = daily.temperature_2m_min != null ? Math.round(daily.temperature_2m_min[i]) : '--';
+                        var isToday = i === 0 ? ' weather-day--today' : '';
+                        html += '<div class="weather-day' + isToday + '"><span class="weather-day-name">' + dayName + '</span><span class="weather-day-date">' + dayNum + '</span><span class="weather-day-icon">' + info.icon + '</span><span class="weather-day-temps">' + maxT + '° <span class="weather-day-min">' + minT + '°</span></span></div>';
+                    }
+                    weekEl.innerHTML = html;
+                }
+            }).catch(function() { if (loading) loading.textContent = 'Hava durumu yüklenemedi.'; });
+        })();
+
+        // Yan reklamlar: hava durumu bölümüne yaklaşılırken açılır (çok aşağı inmeden)
+        (function() {
+            const hero = document.querySelector('.hero-slider');
+            const weather = document.getElementById('weatherCorlu');
+            if (!hero) {
+                document.body.classList.add('show-side-ads');
+                return;
+            }
+
+            function toggleSideAdsWithWeather() {
+                var y = window.scrollY || window.pageYOffset || 0;
+                var lead;
+                if (weather) {
+                    // Hava kutusu ekrana gelmeden ~0.5–0.65 ekran önce tetikle
+                    lead = Math.min(560, Math.round(window.innerHeight * 0.62));
+                    if (y >= weather.offsetTop - lead) {
+                        document.body.classList.add('show-side-ads');
+                    } else {
+                        document.body.classList.remove('show-side-ads');
+                    }
+                } else {
+                    var heroBottom = hero.offsetTop + hero.offsetHeight;
+                    if (y >= heroBottom - 200) {
+                        document.body.classList.add('show-side-ads');
+                    } else {
+                        document.body.classList.remove('show-side-ads');
+                    }
+                }
+            }
+
+            toggleSideAdsWithWeather();
+            window.addEventListener('scroll', toggleSideAdsWithWeather, { passive: true });
+            window.addEventListener('resize', toggleSideAdsWithWeather);
+        })();
+    </script>
+</body>
+</html>

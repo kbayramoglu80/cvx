@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Reklam Yönetimi - 59 Haber Kutusu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --red: #D32F2F; --red-dark: #B71C1C; --red-light: #FFEBEE;
+            --white: #FFFFFF; --gray-50: #FAFAFA; --gray-100: #F5F5F5;
+            --gray-200: #EEEEEE; --gray-300: #E0E0E0; --gray-600: #757575;
+            --gray-800: #424242; --gray-900: #212121;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--gray-900); min-height: 100vh; display: flex; flex-direction: column; }
+        a { text-decoration: none; color: inherit; }
+
+        .admin-header {
+            background: var(--gray-900); color: var(--white); padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .admin-header h1 { font-size: 18px; font-weight: 700; }
+        .admin-header h1 span { color: var(--red); }
+        .admin-header a { color: var(--gray-600); font-size: 13px; transition: color 0.2s; }
+        .admin-header a:hover { color: var(--white); }
+
+        .admin-menu-toggle{
+            display:none;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-300);
+            color: var(--gray-800);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .admin-links{
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* column-reverse kullanılmamalı: form kapalıyken tek çocuk (liste) alta yapışıyordu. */
+        .admin-layout { flex: 1; display: flex; flex-direction: column; min-height: calc(100vh - 56px); }
+        .form-panel { background: #fff; padding: 28px; border-right: none; border-top: 1px solid var(--gray-200); overflow-y: auto; }
+        .list-panel { flex: 1 1 auto; padding: 28px; overflow-y: auto; min-height: 0; background: var(--gray-100); }
+        .ad-modal-overlay{
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9998;
+            display: none;
+        }
+        .ad-modal-overlay.open{ display: block; }
+        body.ad-modal-open{ overflow: hidden; }
+        #adFormPanel{
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(980px, 96vw);
+            max-height: calc(100vh - 90px);
+            z-index: 9999;
+            border-radius: 16px;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.28);
+            overflow-y: auto;
+            border-top: none !important;
+        }
+        body.ad-modal-open #adFormPanel{ display: block; }
+        .ad-modal-header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            padding-bottom: 12px;
+            z-index: 2;
+        }
+        .ad-modal-header .form-title{
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--red);
+            flex: 1 1 auto;
+        }
+        .ad-modal-close{
+            border: 1.5px solid var(--gray-300);
+            background: #fff;
+            color: var(--gray-800);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .form-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--red); }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-300); border-radius: 6px;
+            font-family: inherit; font-size: 14px; transition: border-color 0.2s; background: #fff;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--red); }
+        .form-group input[readonly] {
+            background: var(--gray-50);
+            color: var(--gray-800);
+            cursor: default;
+        }
+        .form-note {
+            background: #fff8f8;
+            border: 1px solid #ffcdd2;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #7f1d1d;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        .group-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--gray-800);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin: 18px 0 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--gray-300);
+        }
+        .form-hint {
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+        .size-reference {
+            background: #f0f7ff;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            font-size: 12px;
+        }
+        .size-reference strong { color: var(--gray-900); }
+        .size-ref-table {
+            width: 100%;
+            margin: 10px 0;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .size-ref-table th, .size-ref-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid #bbdefb;
+        }
+        .size-ref-table th { background: #e3f2fd; color: var(--gray-800); font-weight: 700; }
+        .size-ref-table td { background: #fff; }
+        .size-ref-note {
+            margin: 0;
+            font-size: 11px;
+            color: #1565c0;
+            line-height: 1.5;
+        }
+        .size-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .check-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--gray-800);
+        }
+        .check-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--red);
+        }
+        .media-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .btn-small {
+            border: 1px solid var(--gray-300);
+            background: #fff;
+            color: var(--gray-800);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-small.active {
+            background: var(--gray-900);
+            color: #fff;
+            border-color: var(--gray-900);
+        }
+        .selected-files {
+            margin-top: 8px;
+            padding: 10px;
+            border: 1px dashed var(--gray-300);
+            border-radius: 6px;
+            background: #fafafa;
+            max-height: 140px;
+            overflow: auto;
+            font-size: 12px;
+            color: var(--gray-700);
+        }
+        .selected-files ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+        .btn-submit {
+            width: 100%; padding: 12px; background: var(--red); color: #fff; border: none; border-radius: 6px;
+            font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--red-dark); }
+        .btn-cancel {
+            display: inline-block; width: 100%; text-align: center; padding: 10px; margin-top: 8px;
+            color: var(--gray-600); font-size: 13px; font-weight: 600; border: 1.5px solid var(--gray-300); border-radius: 6px;
+        }
+
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .ads-filters {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+            position: sticky; top: 0; z-index: 6;
+            background: var(--gray-100);
+            padding: 12px 0 14px;
+            margin-top: -4px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .list-panel-inner { max-width: 1400px; margin: 0 auto; }
+        .ads-visible-empty {
+            display: none;
+            margin-top: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            color: var(--gray-600);
+            background: #fff;
+            border: 1px dashed var(--gray-300);
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .ads-visible-empty.show { display: block; }
+        .filter-btn {
+            border: 1.5px solid var(--gray-300);
+            background: #fff;
+            color: var(--gray-800);
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+        }
+        .filter-search{
+            flex: 1 1 220px;
+            min-width: 220px;
+            border: 1.5px solid var(--gray-300);
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .filter-search:focus{
+            outline: none;
+            border-color: var(--red);
+        }
+        /* Mobil reklam paneli (/ads-mobile): filtre şeridi dar ekranda üst üste */
+        .ads-filters--mobile-panel {
+            gap: 8px;
+        }
+        @media (max-width: 900px) {
+            .ads-filters--mobile-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ads-filters--mobile-panel .filter-search {
+                flex: 1 1 auto;
+                min-width: 0;
+                width: 100%;
+            }
+            .ads-filters--mobile-panel > .btn-small,
+            .ads-filters--mobile-panel > .filter-btn {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+        .filter-btn:hover { opacity: 0.92; }
+        .filter-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+        .ads-section.hidden { display: none !important; }
+        .ad-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+        .ad-preview { background: var(--gray-50); padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-200); }
+        .ad-preview img, .ad-preview video { width: 100%; max-height: 260px; object-fit: contain; border-radius: 6px; margin: 0 auto; }
+        .ad-info { padding: 14px; }
+        .ad-name { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+        .ad-meta { font-size: 12px; color: var(--gray-600); line-height: 1.7; }
+        .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-right: 6px; }
+        .badge-left { background: #E3F2FD; color: #1565C0; }
+        .badge-right { background: #E8F5E9; color: #2E7D32; }
+        .badge-top { background: #FFF3E0; color: #E65100; }
+        .badge-bottom { background: #F3E5F5; color: #7B1FA2; }
+        .badge-custom { background: #F5F5F5; color: #616161; }
+        .badge-between { background: #E3F2FD; color: #1565C0; }
+        .badge-passive { background: #F5F5F5; color: #757575; }
+        .ad-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .action-btn {
+            padding: 6px 12px; font-size: 11px; font-weight: 600; border-radius: 4px; border: none;
+            cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.85; }
+        .btn-edit { background: #E3F2FD; color: #1565C0; }
+        .btn-toggle { background: #F5F5F5; color: #424242; }
+        .btn-delete { background: #FFEBEE; color: #D32F2F; }
+
+        .ad-group-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+        .ad-group-header {
+            display: flex; align-items: center; gap: 12px; padding: 14px;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .ad-group-header:hover { background: var(--gray-50); }
+        .ad-group-header .ad-group-preview {
+            width: 80px; height: 80px; flex-shrink: 0; background: var(--gray-100);
+            border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .ad-group-header .ad-group-preview img,
+        .ad-group-header .ad-group-preview video { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .ad-group-header .ad-group-info { flex: 1; min-width: 0; }
+        .ad-group-header .ad-group-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .ad-group-header .ad-group-meta { font-size: 12px; color: var(--gray-600); }
+        .ad-group-header .ad-group-chevron { font-size: 18px; color: var(--gray-400); }
+        .ad-group-card.expanded .ad-group-chevron { transform: rotate(180deg); }
+        .ad-group-children {
+            display: none;
+            border-top: 1px solid var(--gray-200);
+            padding: 12px;
+            background: var(--gray-50);
+        }
+        .ad-group-card.expanded .ad-group-children { display: block; }
+        .ad-group-child {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--gray-200);
+        }
+        .ad-group-child:last-child { margin-bottom: 0; }
+        .ad-group-child-preview {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--gray-100);
+        }
+        .ad-group-child-preview img,
+        .ad-group-child-preview video { width: 100%; height: 100%; object-fit: cover; }
+        .ad-group-child-info { flex: 1; font-size: 12px; color: var(--gray-700); }
+        .ad-group-child-name { font-weight: 600; color: var(--gray-900); margin-bottom: 2px; }
+        .ad-group-child-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .ads-list-view { display: block; }
+        .ads-list-view.hidden { display: none !important; }
+        .ad-folder-view { display: none; padding: 0; }
+        .ad-folder-view.visible { display: block !important; }
+        .ad-folder-back {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 16px; margin-bottom: 16px;
+            background: var(--gray-100); border: 1px solid var(--gray-300); border-radius: 8px;
+            color: var(--gray-800); font-size: 14px; font-weight: 600; cursor: pointer;
+            text-decoration: none; font-family: inherit; transition: background 0.2s;
+        }
+        .ad-folder-back:hover { background: var(--gray-200); }
+        .ad-folder-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--red); }
+        .ad-folder-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-600); background: #fff; border-radius: 10px; border: 1px solid var(--gray-200); }
+
+        @media (max-width: 900px) {
+            .admin-layout { flex-direction: column; }
+            .form-panel { border-top: 1px solid var(--gray-200); border-bottom: none; }
+            .size-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header{
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .admin-menu-toggle{
+                display: inline-flex;
+            }
+            .admin-links{
+                width: 100%;
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding-top: 6px;
+            }
+            .admin-links.open{
+                display: flex;
+            }
+            .admin-header a{
+                font-size: 14px;
+            }
+            .form-panel{
+                padding: 18px;
+            }
+            .list-panel{
+                padding: 18px;
+            }
+        }
+        .admin-nav-ads a { font-weight: 600; }
+        .admin-nav-ads a.active { color: var(--white) !important; text-decoration: underline; text-underline-offset: 4px; }
+    </style>
+</head>
+<body>
+    <% const adsPanelDevice = (locals.panelDevice === 'mobile' || locals.panelDevice === 'common') ? locals.panelDevice : 'desktop'; %>
+    <% const adsBasePath = '/' + adminPath + (adsPanelDevice === 'mobile' ? '/ads-mobile' : (adsPanelDevice === 'common' ? '/ads-common' : '/ads')); %>
+    <div class="admin-header">
+        <h1><span>59</span> Haber Kutusu - Reklam Yönetimi <span style="font-size:13px;font-weight:600;color:#bdbdbd;">(<%= adsPanelDevice === 'mobile' ? 'Mobil' : (adsPanelDevice === 'common' ? 'Ortak (PC + Mobil)' : 'PC') %>)</span></h1>
+        <button type="button" class="admin-menu-toggle" id="adminMenuToggle" aria-label="Admin menü">&#9776;</button>
+        <div id="adminLinks" class="admin-links">
+            <span class="admin-nav-ads" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <a href="/<%= adminPath %>/ads" class="<%= adsPanelDevice === 'desktop' ? 'active' : '' %>" style="color:#42A5F5;">PC Reklamları</a>
+                <a href="/<%= adminPath %>/ads-mobile" class="<%= adsPanelDevice === 'mobile' ? 'active' : '' %>" style="color:#66BB6A;">Mobil Reklamları</a>
+                <a href="/<%= adminPath %>/ads-common" class="<%= adsPanelDevice === 'common' ? 'active' : '' %>" style="color:#FFB300;">Ortak Reklamlar</a>
+            </span>
+            <a href="/<%= adminPath %>">Haberler</a>
+            <a href="/<%= adminPath %>/kunye" style="color:#AB47BC;font-weight:600;">Künye</a>
+            <a href="/<%= adminPath %>/hakkinda" style="color:#FFA726;font-weight:600;">Hakkında</a>
+            <a href="/<%= adminPath %>/scraper" style="color:#66BB6A;font-weight:600;">Haber Çekici</a>
+            <a href="/">&#8592; Siteye Dön</a>
+            <a href="/<%= adminPath %>/cikis" style="color:#ef5350;">Çıkış Yap</a>
+        </div>
+    </div>
+
+    <div class="admin-layout">
+        <div class="form-panel" id="adFormPanel">
+            <div class="ad-modal-header">
+                <h3 class="form-title"><%= editAd ? 'Reklamı Düzenle' : 'Yeni Reklam Ekle' %></h3>
+                <button type="button" class="ad-modal-close" id="adFormCloseBtn" aria-label="Kapat">Kapat</button>
+            </div>
+            <form id="adForm" action="<%= editAd ? '/api/ads/' + editAd._id : '/api/ads' %>" method="POST" enctype="multipart/form-data" autocomplete="off">
+                <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                <div class="form-note">
+                    <strong>Toplu yükleme aktif:</strong> Birden fazla görsel/video seçebilirsiniz.
+                    <br>
+                    <%= editAd ? 'Düzenlemede ilk dosya mevcut reklamı günceller, diğer dosyalar aynı ayarlarla yeni reklam olarak eklenir.' : 'Yeni kayıtta dosyalar seçtiğiniz sırayla eklenir ve otomatik döner.' %>
+                </div>
+
+                <div class="group-title">Temel Ayarlar</div>
+                <div class="form-group">
+                    <label>Reklam Adı</label>
+                    <input type="text" name="name" required placeholder="Örn: Sağ Banner - Şirket A" value="<%= editAd ? editAd.name : '' %>">
+                    <p class="form-hint">Toplu yüklemede otomatik: Reklam Adı - 01, 02, 03...</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Yönlendirme Linki</label>
+                    <input type="url" name="link" placeholder="https://ornek.com" value="<%= editAd ? editAd.link : '' %>">
+                    <p class="form-hint">Boş bırakılırsa tıklama hedefi # olur.</p>
+                </div>
+
+                <% const showFullDeviceSelect = editAd && editAd.deviceTarget === 'both'; %>
+                <% const lockDesktopPanel = adsPanelDevice === 'desktop' && (!editAd || editAd.deviceTarget === 'desktop'); %>
+                <% const lockMobilePanel = adsPanelDevice === 'mobile' && (!editAd || editAd.deviceTarget === 'mobile'); %>
+                <% const lockCommonPanel = adsPanelDevice === 'common' && (!editAd || editAd.deviceTarget === 'both'); %>
+                <div class="form-group">
+                    <label>Cihaz (PC / Telefon)</label>
+                    <% if (showFullDeviceSelect) { %>
+                    <select name="deviceTarget" id="deviceTargetSelect" required>
+                        <option value="" disabled>Cihazı seçin</option>
+                        <option value="both" <%= (editAd.deviceTarget || 'both') === 'both' ? 'selected' : '' %>>Bilgisayar + Telefon</option>
+                        <option value="desktop" <%= editAd.deviceTarget === 'desktop' ? 'selected' : '' %>>Sadece Bilgisayar (PC)</option>
+                        <option value="mobile" <%= editAd.deviceTarget === 'mobile' ? 'selected' : '' %>>Sadece Telefon / Tablet</option>
+                    </select>
+                    <p class="form-hint">Bu kayıt &quot;her iki cihaz&quot; olarak işaretli. İsterseniz tek cihaza indirebilirsiniz.</p>
+                    <% } else if (lockDesktopPanel) { %>
+                    <input type="hidden" name="deviceTarget" id="deviceTargetSelect" value="desktop">
+                    <p style="font-size:14px;padding:10px 12px;background:#E3F2FD;border-radius:8px;border:1px solid #90CAF9;"><strong>PC Reklamları</strong> panelindesiniz. Bu kayıt yalnızca masaüstü/tablet geniş ekranda yayınlanır.</p>
+                    <% } else if (lockMobilePanel) { %>
+                    <input type="hidden" name="deviceTarget" id="deviceTargetSelect" value="mobile">
+                    <p style="font-size:14px;padding:10px 12px;background:#E8F5E9;border-radius:8px;border:1px solid #A5D6A7;"><strong>Mobil Reklamları</strong> panelindesiniz. Bu kayıt yalnızca telefon / küçük ekranda yayınlanır.</p>
+                    <% } else if (lockCommonPanel) { %>
+                    <input type="hidden" name="deviceTarget" id="deviceTargetSelect" value="both">
+                    <p style="font-size:14px;padding:10px 12px;background:#FFF8E1;border-radius:8px;border:1px solid #FFE082;"><strong>Ortak Reklamlar</strong> panelindesiniz. Bu kayıt hem bilgisayar hem mobil cihazlarda yayınlanır.</p>
+                    <% } else { %>
+                    <select name="deviceTarget" id="deviceTargetSelect" required>
+                        <option value="" disabled <%= !editAd ? 'selected' : '' %>>Cihazı seçin</option>
+                        <option value="both" <%= editAd && (editAd.deviceTarget || 'both') === 'both' ? 'selected' : '' %>>Bilgisayar + Telefon</option>
+                        <option value="desktop" <%= editAd && editAd.deviceTarget === 'desktop' ? 'selected' : '' %>>Sadece Bilgisayar (PC)</option>
+                        <option value="mobile" <%= editAd && editAd.deviceTarget === 'mobile' ? 'selected' : '' %>>Sadece Telefon / Tablet</option>
+                    </select>
+                    <p class="form-hint">Reklamın sadece bilgisayarda mı, sadece telefonda mı yoksa her ikisinde birden mi görüneceğini seçin.</p>
+                    <% } %>
+                </div>
+
+                <div id="pcDeviceSettings" style="<%= (lockMobilePanel && !showFullDeviceSelect) ? 'display:none' : '' %>">
+                    <div class="group-title">Bilgisayar (PC)</div>
+
+                    <div class="form-group">
+                        <label>Konum (PC)</label>
+                        <div class="check-grid">
+                            <label class="check-item">
+                                <input
+                                    type="checkbox"
+                                    name="positionsDesktop[]"
+                                    value="left"
+                                    <%= !editAd ? 'checked' : (editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.position === 'left') ? 'checked' : '' %>>
+                                Sol Yan
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="positionsDesktop[]" value="right" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.position === 'right' ? 'checked' : '' %>>
+                                Sağ Yan
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="positionsDesktop[]" value="top" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.position === 'top' ? 'checked' : '' %>>
+                                Üst
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="positionsDesktop[]" value="bottom" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.position === 'bottom' ? 'checked' : '' %>>
+                                Alt
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="positionsDesktop[]" value="between" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.position === 'between' ? 'checked' : '' %>>
+                                Haber Arası
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="positionsDesktop[]" value="custom" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.position === 'custom' ? 'checked' : '' %>>
+                                Özel
+                            </label>
+                        </div>
+                        <p class="form-hint">PC ekranında nerede görünsün? Çoklu seçilebilir.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sayfa(lar) (PC)</label>
+                        <div class="check-grid">
+                            <label class="check-item">
+                                <input
+                                    type="checkbox"
+                                    name="pageTargetsDesktop[]"
+                                    value="all"
+                                    <%= !editAd ? 'checked' : (editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && (editAd.pageTarget || 'all') === 'all') ? 'checked' : '' %>>
+                                Tüm Sayfalar
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsDesktop[]" value="home" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'home' ? 'checked' : '' %>>
+                                Ana Sayfa
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsDesktop[]" value="category" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'category' ? 'checked' : '' %>>
+                                Kategori
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsDesktop[]" value="detail" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'detail' ? 'checked' : '' %>>
+                                Haber Detay
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsDesktop[]" value="kunye" <%= editAd && (editAd.deviceTarget === 'desktop' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'kunye' ? 'checked' : '' %>>
+                                Künye
+                            </label>
+                        </div>
+                        <p class="form-hint">PC ekranında hangi sayfalar? Çoklu seçilebilir.</p>
+                    </div>
+                </div>
+
+                <div id="mobileDeviceSettings" style="<%= (lockDesktopPanel && !showFullDeviceSelect) ? 'display:none' : '' %>">
+                    <div class="group-title">Telefon (Mobil)</div>
+
+                    <div class="form-group">
+                        <label>Konum (Mobil)</label>
+                        <input type="hidden" name="positionsMobile[]" value="top">
+                        <p style="font-size:14px;padding:10px 12px;background:#FFF8E1;border-radius:8px;border:1px solid #FFE082;">
+                            Mobilde reklamlar yalnızca <strong>üst şerit</strong>te gösterilir; sağ / sol yan ve diğer sabit alanlar telefonda kullanılmaz.
+                            <% if (editAd && (editAd.deviceTarget === 'mobile' || editAd.deviceTarget === 'both') && editAd.position && editAd.position !== 'top') { %>
+                            <br><span style="color:#E65100;">Bu kayıt eskiden &quot;<%= editAd.position %>&quot; konumundaydı; kaydettiğinizde otomatik olarak üste taşınır.</span>
+                            <% } %>
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sayfa(lar) (Mobil)</label>
+                        <div class="check-grid">
+                            <label class="check-item">
+                                <input
+                                    type="checkbox"
+                                    name="pageTargetsMobile[]"
+                                    value="all"
+                                    <%= !editAd ? 'checked' : (editAd && (editAd.deviceTarget === 'mobile' || editAd.deviceTarget === 'both') && (editAd.pageTarget || 'all') === 'all') ? 'checked' : '' %>>
+                                Tüm Sayfalar
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsMobile[]" value="home" <%= editAd && (editAd.deviceTarget === 'mobile' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'home' ? 'checked' : '' %>>
+                                Ana Sayfa
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsMobile[]" value="category" <%= editAd && (editAd.deviceTarget === 'mobile' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'category' ? 'checked' : '' %>>
+                                Kategori
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsMobile[]" value="detail" <%= editAd && (editAd.deviceTarget === 'mobile' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'detail' ? 'checked' : '' %>>
+                                Haber Detay
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="pageTargetsMobile[]" value="kunye" <%= editAd && (editAd.deviceTarget === 'mobile' || editAd.deviceTarget === 'both') && editAd.pageTarget === 'kunye' ? 'checked' : '' %>>
+                                Künye
+                            </label>
+                        </div>
+                        <p class="form-hint">Mobilde hangi sayfalar? Çoklu seçilebilir.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Reklam Yönü</label>
+                    <select name="orientation">
+                        <option value="vertical" <%= !editAd || (editAd.orientation || 'vertical') === 'vertical' ? 'selected' : '' %>>Dikey (normal)</option>
+                        <option value="horizontal" <%= editAd && editAd.orientation === 'horizontal' ? 'selected' : '' %>>Yatay</option>
+                        <option value="tilt-right" <%= editAd && editAd.orientation === 'tilt-right' ? 'selected' : '' %>>Sağa yatık</option>
+                        <option value="tilt-left" <%= editAd && editAd.orientation === 'tilt-left' ? 'selected' : '' %>>Sola yatık</option>
+                    </select>
+                    <p class="form-hint">Reklamın dikey mi, yatay mı, sağa mı sola mı eğik gösterileceğini seçin.</p>
+                </div>
+
+                <div class="group-title">Medya ve Boyut</div>
+                <div class="size-reference">
+                    <strong>Varsayılan reklam boyutları</strong>
+                    <table class="size-ref-table">
+                        <thead>
+                            <tr><th></th><th>PC (masaüstü)</th><th>Telefon / tablet</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Standart</strong></td><td>350 × 250 px</td><td>320 × 250 px</td></tr>
+                            <tr><td>Sol / Sağ / Özel</td><td>160 × 600 px</td><td>320 × 250 px</td></tr>
+                            <tr><td>Üst / Alt (klasik şerit)</td><td>728 × 90 px</td><td>320 × 120 px</td></tr>
+                            <tr><td>Haber arası</td><td>1200 × 280 px</td><td>320 × 250 px</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="size-ref-note">Yeni kayıtta ve <strong>görsel seçtiğinizde</strong> aşağıdaki alanlar otomatik <strong>350 × 250</strong> (PC) ve <strong>320 × 250</strong> (mobil) olur; istediğiniz zaman değiştirebilirsiniz.</p>
+                </div>
+                <input type="hidden" name="mediaType" value="video">
+
+                <div class="group-title">Bilgisayar (PC) Boyutları</div>
+                <div class="size-grid">
+                    <div class="form-group">
+                        <label>PC Genişlik (px)</label>
+                        <input type="number" id="adWidth" name="width" min="80" max="3000" value="<%= editAd ? editAd.width : 350 %>" placeholder="örn. 350">
+                    </div>
+                    <div class="form-group">
+                        <label>PC Yükseklik (px)</label>
+                        <input type="number" id="adHeight" name="height" min="80" max="3000" value="<%= editAd ? editAd.height : 250 %>" placeholder="örn. 250">
+                    </div>
+                </div>
+
+                <div class="group-title">Telefon / Tablet Boyutları</div>
+                <div class="size-grid">
+                    <div class="form-group">
+                        <label>Mobil Genişlik (px)</label>
+                        <input type="number" id="adMobileWidth" name="mobileWidth" min="80" max="1200" value="<%= editAd ? (editAd.mobileWidth || 320) : 320 %>" placeholder="örn. 320">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobil Yükseklik (px)</label>
+                        <input type="number" id="adMobileHeight" name="mobileHeight" min="80" max="1600" value="<%= editAd ? (editAd.mobileHeight || 250) : 250 %>" placeholder="örn. 250">
+                    </div>
+                </div>
+                <p class="form-hint" style="margin-top:-2px;">Boyutları istediğiniz gibi düzenleyebilirsiniz. <strong>Görsel</strong> dosyası seçtiğinizde standart ölçüler (350×250 / 320×250) otomatik uygulanır. Yalnızca video seçtiyseniz veya alanları kendiniz doldurduysanız değişmez.</p>
+
+                <div class="form-group">
+                    <label>Dönüş Süresi (saniye)</label>
+                    <input type="number" name="rotateSeconds" min="1" max="120" value="<%= editAd ? (editAd.rotateSeconds || 7) : 7 %>">
+                </div>
+
+                <div class="form-group">
+                    <label>Reklam Medyası (Görsel + MP4)</label>
+                    <input id="mediaInput" type="file" name="media" accept="image/*,video/mp4" <%= editAd ? '' : 'required' %> multiple>
+                    <p class="form-hint">Yüklenen tüm görsel/video dosyaları otomatik MP4'e dönüştürülür ve seçtiğiniz boyuta ölçeklenir (maks. 30MB / dosya).</p>
+                    <p id="mediaCountText" class="form-hint">Henüz dosya secilmedi.</p>
+                    <div class="media-actions">
+                        <button id="clearMediaBtn" type="button" class="btn-small">Secimi Temizle</button>
+                    </div>
+                    <div id="selectedFilesBox" class="selected-files" style="display:none;">
+                        <ul id="selectedFilesList"></ul>
+                    </div>
+                    <% if (editAd && (editAd.media || editAd.image)) { %>
+                        <input type="hidden" name="existingMedia" value="<%= editAd.media || editAd.image %>">
+                        <input type="hidden" name="existingMediaType" value="<%= editAd.mediaType || 'image' %>">
+                        <p class="form-hint">Mevcut medya: <%= editAd.media || editAd.image %></p>
+                    <% } %>
+                </div>
+
+                <div class="group-title">Zamanlama ve Konum</div>
+                <div class="form-group">
+                    <label>Başlangıç Tarihi (opsiyonel)</label>
+                    <input type="date" name="startDate" value="<%= editAd && editAd.startDate ? new Date(editAd.startDate).toISOString().substring(0, 10) : '' %>">
+                </div>
+
+                <div class="form-group">
+                    <label>Bitiş Tarihi (opsiyonel)</label>
+                    <input type="date" name="endDate" value="<%= editAd && editAd.endDate ? new Date(editAd.endDate).toISOString().substring(0, 10) : '' %>">
+                </div>
+
+                <div class="form-group">
+                    <label>Özel Konum - Üst Mesafe (px)</label>
+                    <input type="number" name="customTop" min="0" max="5000" value="<%= editAd ? (editAd.customTop ?? 180) : 180 %>">
+                </div>
+
+                <div class="form-group">
+                    <label>Özel Konum - Sol Mesafe (px)</label>
+                    <input type="number" name="customLeft" min="0" max="5000" value="<%= editAd ? (editAd.customLeft ?? 12) : 12 %>">
+                </div>
+
+                <div class="form-group">
+                    <label>Özel Konum - Z-index</label>
+                    <input type="number" name="customZIndex" min="1" max="9999" value="<%= editAd ? (editAd.customZIndex ?? 60) : 60 %>">
+                    <p class="form-hint">Bu alanlar sadece "Özel Konum" seçtiğinizde kullanılır.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Gelişmiş CSS (opsiyonel)</label>
+                    <input type="text" name="customStyles" placeholder="ileri seviye için: top:220px;left:30px;z-index:70;" value="<%= editAd ? (editAd.customStyles || '') : '' %>">
+                </div>
+
+                <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+                    <input type="checkbox" id="active" name="active" style="width:16px;height:16px;" <%= !editAd || editAd.active ? 'checked' : '' %>>
+                    <label for="active" style="margin:0;text-transform:none;letter-spacing:0;">Aktif</label>
+                </div>
+
+                <button type="submit" class="btn-submit"><%= editAd ? 'Güncelle' : 'Reklamı Kaydet' %></button>
+                <% if (editAd) { %>
+                    <a href="<%= adsBasePath %>" class="btn-cancel">İptal</a>
+                <% } %>
+            </form>
+        </div>
+
+        <div class="list-panel">
+            <div class="list-panel-inner">
+            <% const allAds = Array.isArray(ads) ? ads : []; %>
+            <% if (!allAds.length) { %>
+                <div class="empty-state">
+                    <h3>Henüz reklam yok</h3>
+                    <p>Reklam eklemek için <strong>Reklam Ekle</strong> düğmesine basın.</p>
+                    <button type="button" class="btn-small" id="scrollToFormBtn">Reklam Ekle</button>
+                </div>
+            <% } else { %>
+                <% const topAds = allAds.filter(function(ad) { return ad.position === 'top'; }); %>
+                <% const betweenAds = allAds.filter(function(ad) { return ad.position === 'between'; }); %>
+                <% const sideAds = allAds.filter(function(ad) { return ['left','right','bottom','custom'].includes(ad.position); }); %>
+
+                <div id="ads-list-view" class="ads-list-view">
+                    <div class="ads-filters<%= adsPanelDevice === 'mobile' ? ' ads-filters--mobile-panel' : '' %>" role="tablist" aria-label="Reklam filtresi">
+                        <input
+                            id="adSearchInput"
+                            type="search"
+                            class="filter-search"
+                            placeholder="Reklam adı ara..."
+                            aria-label="Reklam adı ara"
+                        >
+                        <button
+                            type="button"
+                            class="btn-small"
+                            id="scrollToFormBtn"
+                            title="Reklam formunu aç"
+                        >
+                            Reklam Ekle
+                        </button>
+                        <% if (adsPanelDevice !== 'mobile') { %>
+                        <button type="button" class="btn-small" data-preset-position="right" title="Sağ reklamlar">Sağ</button>
+                        <button type="button" class="btn-small" data-preset-position="left" title="Sol reklamlar">Sol</button>
+                        <button type="button" class="btn-small" data-preset-position="bottom" title="Alt reklamlar">Alt</button>
+                        <% } %>
+                        <button type="button" class="filter-btn<%= adsPanelDevice === 'mobile' ? '' : ' active' %>" data-filter="all">Hepsi</button>
+                        <button type="button" class="filter-btn<%= adsPanelDevice === 'mobile' ? ' active' : '' %>" data-filter="top">Üst Banner</button>
+                        <% if (adsPanelDevice !== 'mobile') { %>
+                        <button type="button" class="filter-btn" data-filter="between">Haber Arası</button>
+                        <button type="button" class="filter-btn" data-filter="side">Yan / Üst-Alt / Özel</button>
+                        <% } %>
+                    </div>
+
+                    <div id="adsVisibleEmpty" class="ads-visible-empty" role="status">
+                        <% if (adsPanelDevice === 'mobile') { %>
+                        Bu görünümde listelenecek reklam yok. <strong>Üst Banner</strong> veya <strong>Hepsi</strong> sekmesini deneyin, aramayı temizleyin ya da <strong>Reklam Ekle</strong> ile yeni kayıt oluşturun. (Mobilde yalnızca üst şerit kullanılır.)
+                        <% } else { %>
+                        Bu görünümde listelenecek reklam yok. Farklı bir sekme deneyin, aramayı temizleyin veya <strong>Sağ / Sol / Alt</strong> hızlı filtrelerini kapatıp <strong>Hepsi</strong>’ne dönün. Yeni reklam için <strong>Reklam Ekle</strong>’yi kullanın.
+                        <% } %>
+                    </div>
+
+                    <div class="ads-section" data-filter="top" data-section="top">
+                        <% if (topAds.length) { %>
+                            <h3 class="form-title" style="border-bottom-color:#FFA726;">Üst Banner<% if (adsPanelDevice === 'mobile') { %> (Mobil)<% } else { %> - PC / Telefon<% } %></h3>
+                            <p class="form-hint" style="margin-top:4px;margin-bottom:10px;">
+                                <% if (adsPanelDevice === 'mobile') { %>
+                                Mobilde reklamlar yalnızca bu üst şeritte gösterilir.
+                                <% } else { %>
+                                Bu bölüm sitedeki en üst banner alanıdır. Aynı reklam burada hem PC hem telefon boyutunda gösterilir.
+                                <% } %>
+                            </p>
+                            <div class="ads-grid">
+                                <% topAds.forEach(function(ad) { %>
+                                    <% var adMedia = ad.media || ad.image; %>
+                                    <% var deviceLabel = 'Bilgisayar + Telefon'; if (ad.deviceTarget === 'desktop') { deviceLabel = 'Sadece Bilgisayar (PC)'; } if (ad.deviceTarget === 'mobile') { deviceLabel = 'Sadece Telefon / Tablet'; } %>
+                                    <% var orientLabel = 'Dikey'; if (ad.orientation === 'horizontal') { orientLabel = 'Yatay'; } if (ad.orientation === 'tilt-right') { orientLabel = 'Sağa yatık'; } if (ad.orientation === 'tilt-left') { orientLabel = 'Sola yatık'; } %>
+                                    <div class="ad-card" data-position="top">
+                                        <div class="ad-preview">
+                                            <% if (ad.mediaType === 'video' && adMedia) { %>
+                                                <video src="<%= adMedia %>" muted playsinline preload="metadata"></video>
+                                            <% } else if (adMedia) { %>
+                                                <img src="<%= adMedia %>" alt="<%= ad.name %>">
+                                            <% } else { %>
+                                                <span style="font-size:24px;color:var(--gray-400);">&#9744;</span>
+                                            <% } %>
+                                        </div>
+                                        <div class="ad-info">
+                                            <div class="ad-name"><%= ad.name %></div>
+                                            <div class="ad-meta">
+                                                <div>PC: <strong><%= ad.width || 350 %> × <%= ad.height || 250 %> px</strong></div>
+                                                <div>Telefon: <strong><%= ad.mobileWidth || 320 %> × <%= ad.mobileHeight || 250 %> px</strong></div>
+                                                <div>Cihaz: <strong><%= deviceLabel %></strong></div>
+                                                <div>Yön: <strong><%= orientLabel %></strong></div>
+                                                <div>Sayfa: <strong><%= ad.pageTarget || 'all' %></strong> · Dönüş: <%= ad.rotateSeconds || 7 %> sn</div>
+                                                <% if (!ad.active) { %><span class="badge badge-passive">PASİF</span><% } %>
+                                            </div>
+                                            <div class="ad-actions">
+                                                <a href="<%= adsBasePath %>?edit=<%= ad._id %>" class="action-btn btn-edit">Düzenle</a>
+                                                <form action="/api/ads/<%= ad._id %>/toggle" method="POST" style="display:inline;">
+                                                    <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                                                    <button type="submit" class="action-btn btn-toggle"><%= ad.active ? 'Pasife Al' : 'Aktife Al' %></button>
+                                                </form>
+                                                <form action="/api/ads/<%= ad._id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Bu reklamı silmek istediğinize emin misiniz?')">
+                                                    <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                                                    <button type="submit" class="action-btn btn-delete">Sil</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="ads-section" data-filter="between" data-section="between">
+                        <% if (betweenAds.length) { %>
+                            <h3 class="form-title" style="border-bottom-color:#1E88E5;">Haber Arası Reklamlar</h3>
+                            <p class="form-hint" style="margin-top:4px;margin-bottom:10px;">
+                                Haber blokları arasına yerleştirilen rotasyon alanıdır.
+                            </p>
+                            <div class="ads-grid">
+                                <% betweenAds.forEach(function(ad) { %>
+                                    <% var adMedia = ad.media || ad.image; %>
+                                    <% var deviceLabel = 'Bilgisayar + Telefon'; if (ad.deviceTarget === 'desktop') { deviceLabel = 'Sadece Bilgisayar (PC)'; } if (ad.deviceTarget === 'mobile') { deviceLabel = 'Sadece Telefon / Tablet'; } %>
+                                    <% var orientLabel = 'Dikey'; if (ad.orientation === 'horizontal') { orientLabel = 'Yatay'; } if (ad.orientation === 'tilt-right') { orientLabel = 'Sağa yatık'; } if (ad.orientation === 'tilt-left') { orientLabel = 'Sola yatık'; } %>
+                                    <div class="ad-card" data-position="between">
+                                        <div class="ad-preview">
+                                            <% if (ad.mediaType === 'video' && adMedia) { %>
+                                                <video src="<%= adMedia %>" muted playsinline preload="metadata"></video>
+                                            <% } else if (adMedia) { %>
+                                                <img src="<%= adMedia %>" alt="<%= ad.name %>">
+                                            <% } else { %>
+                                                <span style="font-size:24px;color:var(--gray-400);">&#9744;</span>
+                                            <% } %>
+                                        </div>
+                                        <div class="ad-info">
+                                            <div class="ad-name"><%= ad.name %></div>
+                                            <div class="ad-meta">
+                                                <span class="badge badge-between">HABER ARASI</span>
+                                                <div>PC: <strong><%= ad.width || 1200 %> × <%= ad.height || 280 %> px</strong></div>
+                                                <div>Telefon: <strong><%= ad.mobileWidth || 320 %> × <%= ad.mobileHeight || 250 %> px</strong></div>
+                                                <div>Cihaz: <strong><%= deviceLabel %></strong></div>
+                                                <div>Yön: <strong><%= orientLabel %></strong></div>
+                                                <div>Sayfa: <strong><%= ad.pageTarget || 'all' %></strong> · Dönüş: <%= ad.rotateSeconds || 7 %> sn</div>
+                                                <% if (!ad.active) { %><span class="badge badge-passive">PASİF</span><% } %>
+                                            </div>
+                                            <div class="ad-actions">
+                                                <a href="<%= adsBasePath %>?edit=<%= ad._id %>" class="action-btn btn-edit">Düzenle</a>
+                                                <form action="/api/ads/<%= ad._id %>/toggle" method="POST" style="display:inline;">
+                                                    <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                                                    <button type="submit" class="action-btn btn-toggle"><%= ad.active ? 'Pasife Al' : 'Aktife Al' %></button>
+                                                </form>
+                                                <form action="/api/ads/<%= ad._id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Bu reklamı silmek istediğinize emin misiniz?')">
+                                                    <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                                                    <button type="submit" class="action-btn btn-delete">Sil</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="ads-section" data-filter="side" data-section="side">
+                        <% if (sideAds.length) { %>
+                            <h3 class="form-title" style="border-bottom-color:#90A4AE;">Yan / Üst-Alt / Özel Reklamlar</h3>
+                            <div class="ads-grid">
+                                <% sideAds.forEach(function(ad) { %>
+                                    <% var adMedia = ad.media || ad.image; %>
+                                    <% var deviceLabel = 'Bilgisayar + Telefon'; if (ad.deviceTarget === 'desktop') { deviceLabel = 'Sadece Bilgisayar (PC)'; } if (ad.deviceTarget === 'mobile') { deviceLabel = 'Sadece Telefon / Tablet'; } %>
+                                    <% var orientLabel = 'Dikey'; if (ad.orientation === 'horizontal') { orientLabel = 'Yatay'; } if (ad.orientation === 'tilt-right') { orientLabel = 'Sağa yatık'; } if (ad.orientation === 'tilt-left') { orientLabel = 'Sola yatık'; } %>
+                                    <div class="ad-card" data-position="<%= ad.position %>">
+                                        <div class="ad-preview">
+                                            <% if (ad.mediaType === 'video' && adMedia) { %>
+                                                <video src="<%= adMedia %>" muted playsinline preload="metadata"></video>
+                                            <% } else if (adMedia) { %>
+                                                <img src="<%= adMedia %>" alt="<%= ad.name %>">
+                                            <% } else { %>
+                                                <span style="font-size:24px;color:var(--gray-400);">&#9744;</span>
+                                            <% } %>
+                                        </div>
+                                        <div class="ad-info">
+                                            <div class="ad-name"><%= ad.name %></div>
+                                            <div class="ad-meta">
+                                                <% var badgeClass = 'badge-custom'; var badgeText = 'ÖZEL'; %>
+                                                <% if (ad.position === 'left') { badgeClass = 'badge-left'; badgeText = 'SOL'; } %>
+                                                <% if (ad.position === 'right') { badgeClass = 'badge-right'; badgeText = 'SAĞ'; } %>
+                                                <% if (ad.position === 'bottom') { badgeClass = 'badge-bottom'; badgeText = 'ALT'; } %>
+                                                <span class="badge <%= badgeClass %>"><%= badgeText %></span>
+                                                <div>PC: <strong><%= ad.width || 160 %> × <%= ad.height || 600 %> px</strong></div>
+                                                <div>Telefon: <strong><%= ad.mobileWidth || 320 %> × <%= ad.mobileHeight || 250 %> px</strong></div>
+                                                <div>Cihaz: <strong><%= deviceLabel %></strong></div>
+                                                <div>Yön: <strong><%= orientLabel %></strong></div>
+                                                <div>Sayfa: <strong><%= ad.pageTarget || 'all' %></strong> · Dönüş: <%= ad.rotateSeconds || 7 %> sn</div>
+                                                <% if (!ad.active) { %><span class="badge badge-passive">PASİF</span><% } %>
+                                            </div>
+                                            <div class="ad-actions">
+                                                <a href="<%= adsBasePath %>?edit=<%= ad._id %>" class="action-btn btn-edit">Düzenle</a>
+                                                <form action="/api/ads/<%= ad._id %>/toggle" method="POST" style="display:inline;">
+                                                    <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                                                    <button type="submit" class="action-btn btn-toggle"><%= ad.active ? 'Pasife Al' : 'Aktife Al' %></button>
+                                                </form>
+                                                <form action="/api/ads/<%= ad._id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Bu reklamı silmek istediğinize emin misiniz?')">
+                                                    <input type="hidden" name="adPanelMode" value="<%= adsPanelDevice %>">
+                                                    <button type="submit" class="action-btn btn-delete">Sil</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div id="adFormOverlay" class="ad-modal-overlay" aria-hidden="true"></div>
+    <script>
+        (function() {
+            var panelDevice = '<%= adsPanelDevice %>';
+            var adminMenuToggle = document.getElementById('adminMenuToggle');
+            var adminLinks = document.getElementById('adminLinks');
+            if (adminMenuToggle && adminLinks) {
+                adminMenuToggle.addEventListener('click', function() {
+                    adminLinks.classList.toggle('open');
+                });
+                window.addEventListener('resize', function() {
+                    if ((window.innerWidth || document.documentElement.clientWidth) > 768) {
+                        adminLinks.classList.remove('open');
+                    }
+                });
+            }
+
+            // deviceTarget seçimine göre PC/Telefon checkbox alanlarını göster/gizle.
+            var deviceTargetSelect = document.getElementById('deviceTargetSelect');
+            var pcDeviceSettings = document.getElementById('pcDeviceSettings');
+            var mobileDeviceSettings = document.getElementById('mobileDeviceSettings');
+            if (deviceTargetSelect && pcDeviceSettings && mobileDeviceSettings) {
+                function syncDeviceSections() {
+                    var val = deviceTargetSelect.value;
+                    var showPC = val === 'desktop' || val === 'both';
+                    var showMobile = val === 'mobile' || val === 'both';
+
+                    pcDeviceSettings.style.display = showPC ? 'block' : 'none';
+                    mobileDeviceSettings.style.display = showMobile ? 'block' : 'none';
+
+                    pcDeviceSettings.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+                        cb.disabled = !showPC;
+                    });
+                    mobileDeviceSettings.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+                        cb.disabled = !showMobile;
+                    });
+                }
+
+                deviceTargetSelect.addEventListener('change', syncDeviceSections);
+                syncDeviceSections();
+
+                // preset butonları içinde kullanabilmek için dışarı açıyoruz.
+                window.__syncDeviceSections = syncDeviceSections;
+            }
+
+            // Ad formunu modal olarak aç/kapat
+            var adFormOverlay = document.getElementById('adFormOverlay');
+            var adFormPanel = document.getElementById('adFormPanel');
+            var adFormCloseBtn = document.getElementById('adFormCloseBtn');
+
+            var isEditMode = <%= editAd ? 1 : 0 %>;
+
+            function openAdForm() {
+                document.body.classList.add('ad-modal-open');
+                if (adFormOverlay) adFormOverlay.classList.add('open');
+                if (deviceTargetSelect) {
+                    // Kaydetmeden önce seçim zorunluluğu için kullanıcıdan cihazı seçmesini istiyoruz.
+                    try {
+                        deviceTargetSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } catch (e) { /* no-op */ }
+                    deviceTargetSelect.focus();
+                }
+            }
+
+            function closeAdForm() {
+                document.body.classList.remove('ad-modal-open');
+                if (adFormOverlay) adFormOverlay.classList.remove('open');
+            }
+
+            if (adFormCloseBtn) {
+                adFormCloseBtn.addEventListener('click', function() {
+                    closeAdForm();
+                });
+            }
+            if (adFormOverlay) {
+                adFormOverlay.addEventListener('click', function() {
+                    closeAdForm();
+                });
+            }
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeAdForm();
+            });
+
+            // edit modunda direkt panel açık gelsin
+            var shouldOpenForm = isEditMode;
+            if (shouldOpenForm) openAdForm();
+
+            // Reklam filtresi (Üst / Haber Arası / Yan/Özel)
+            var filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+            if (filterButtons && filterButtons.length) {
+                var sections = document.querySelectorAll('.ads-section[data-filter]');
+                var searchInput = document.getElementById('adSearchInput');
+                var activePositionFilter = '';
+                var presetButtons = document.querySelectorAll('[data-preset-position]');
+
+                var adsVisibleEmpty = document.getElementById('adsVisibleEmpty');
+
+                function updateVisibleEmpty() {
+                    if (!adsVisibleEmpty) return;
+                    var visibleCount = 0;
+                    document.querySelectorAll('.ads-section[data-filter]').forEach(function(sec) {
+                        if (sec.classList.contains('hidden')) return;
+                        sec.querySelectorAll('.ad-card').forEach(function(card) {
+                            if (card.style.display === 'none') return;
+                            visibleCount++;
+                        });
+                    });
+                    adsVisibleEmpty.classList.toggle('show', visibleCount === 0);
+                }
+
+                function applySearch() {
+                    var q = searchInput ? (searchInput.value || '').trim().toLowerCase() : '';
+                    var cards = document.querySelectorAll('.ad-card');
+                    cards.forEach(function(card) {
+                        var nameEl = card.querySelector('.ad-name');
+                        var nameText = (nameEl && nameEl.textContent ? nameEl.textContent : '').toLowerCase();
+                        var pos = card.getAttribute('data-position') || '';
+                        var matchName = !q || nameText.includes(q);
+                        var matchPos = !activePositionFilter || activePositionFilter === pos;
+                        card.style.display = (matchName && matchPos) ? '' : 'none';
+                    });
+                    updateVisibleEmpty();
+                }
+                function applyFilter(filter) {
+                    filterButtons.forEach(function(btn) {
+                        if (btn.getAttribute('data-filter') === filter) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+
+                    // Üst / Haber Arası / Hepsi görünümünde yan konum (sağ-sol-alt) filtresi sıfırlansın.
+                    if (filter !== 'side') {
+                        activePositionFilter = '';
+                        setPresetActive('');
+                    }
+
+                    sections.forEach(function(sec) {
+                        var secFilter = sec.getAttribute('data-filter');
+                        if (!filter || filter === 'all' || secFilter === filter) {
+                            sec.classList.remove('hidden');
+                        } else {
+                            sec.classList.add('hidden');
+                        }
+                    });
+
+                    applySearch();
+                }
+
+                function setPresetActive(preset) {
+                    presetButtons.forEach(function(btn) {
+                        if ((btn.getAttribute('data-preset-position') || '') === preset) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+
+                filterButtons.forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        applyFilter(btn.getAttribute('data-filter'));
+                    });
+                });
+
+                applyFilter(panelDevice === 'mobile' ? 'top' : 'all');
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        applySearch();
+                    });
+                }
+                // Hızlı yönetim butonları (Sol / Sağ / Alt): listeyi filtreler
+                presetButtons.forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var preset = btn.getAttribute('data-preset-position');
+                        activePositionFilter = preset || '';
+                        setPresetActive(activePositionFilter);
+                        applyFilter('side');
+                    });
+                });
+            }
+
+            var scrollToFormBtn = document.getElementById('scrollToFormBtn');
+            if (scrollToFormBtn) {
+                scrollToFormBtn.addEventListener('click', function() {
+                    // Tarayici prompt'u yerine secimi form modalinin icinden yaptir.
+                    if (deviceTargetSelect) {
+                        var defaultDevice = panelDevice === 'mobile' ? 'mobile' : (panelDevice === 'common' ? 'both' : 'desktop');
+                        deviceTargetSelect.value = defaultDevice;
+                        if (window.__syncDeviceSections) window.__syncDeviceSections();
+                    }
+                    openAdForm();
+                });
+            }
+
+            var listView = document.getElementById('ads-list-view');
+            var folderPanels = document.querySelectorAll('.ad-folder-view');
+            var backButtons = document.querySelectorAll('.ad-folder-back');
+
+            document.querySelectorAll('.ad-group-card[data-group-index]').forEach(function(card) {
+                card.addEventListener('click', function(e) {
+                    if (e.target.closest('a') || e.target.closest('form') || e.target.closest('button')) return;
+                    var idx = card.getAttribute('data-group-index');
+                    if (idx === null) return;
+                    if (listView) listView.classList.add('hidden');
+                    var panel = document.getElementById('ad-folder-panel-' + idx);
+                    if (panel) panel.classList.add('visible');
+                });
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+
+            backButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (listView) listView.classList.remove('hidden');
+                    folderPanels.forEach(function(p) { p.classList.remove('visible'); });
+                });
+            });
+
+            const form = document.getElementById('adForm');
+            const input = document.getElementById('mediaInput');
+            const countText = document.getElementById('mediaCountText');
+            const clearBtn = document.getElementById('clearMediaBtn');
+            const filesBox = document.getElementById('selectedFilesBox');
+            const filesList = document.getElementById('selectedFilesList');
+            if (!form || !input || !countText || !clearBtn || !filesBox || !filesList) return;
+
+            const selectedFiles = [];
+            let fallbackSubmitMode = false;
+
+            function fileKey(file) {
+                return [file.name, file.size, file.lastModified].join('__');
+            }
+
+            function updateSelectedFilesUI() {
+                const count = selectedFiles.length;
+                if (!count) {
+                    countText.textContent = 'Henüz dosya secilmedi.';
+                    filesBox.style.display = 'none';
+                    filesList.innerHTML = '';
+                    return;
+                }
+
+                countText.textContent = count + ' dosya secildi. Kaydet/Guncelle ile toplu olarak islenecek.';
+                filesBox.style.display = 'block';
+                filesList.innerHTML = selectedFiles
+                    .map((file, idx) => '<li>' + (idx + 1) + '. ' + file.name + '</li>')
+                    .join('');
+            }
+
+            function syncInputFiles() {
+                try {
+                    const dt = new DataTransfer();
+                    selectedFiles.forEach(file => dt.items.add(file));
+                    input.files = dt.files;
+                    fallbackSubmitMode = false;
+                    return true;
+                } catch (err) {
+                    fallbackSubmitMode = true;
+                    return false;
+                }
+            }
+
+            /** Görsel seçilince varsayılan PC / mobil kutularına standart boyutları yazar (manuel değiştirilebilir). */
+            function applyStandardAdDimensionsIfImage(files) {
+                var hasImage = files.some(function(f) {
+                    var t = (f.type || '').toLowerCase();
+                    return t.indexOf('image/') === 0;
+                });
+                if (!hasImage) return;
+                var wEl = document.getElementById('adWidth');
+                var hEl = document.getElementById('adHeight');
+                var mwEl = document.getElementById('adMobileWidth');
+                var mhEl = document.getElementById('adMobileHeight');
+                if (wEl) wEl.value = 350;
+                if (hEl) hEl.value = 250;
+                if (mwEl) mwEl.value = 320;
+                if (mhEl) mhEl.value = 250;
+            }
+
+            input.addEventListener('change', function() {
+                const incoming = Array.from(input.files || []);
+                if (!incoming.length) return;
+
+                const existing = new Set(selectedFiles.map(fileKey));
+                incoming.forEach(file => {
+                    const key = fileKey(file);
+                    if (!existing.has(key)) {
+                        selectedFiles.push(file);
+                        existing.add(key);
+                    }
+                });
+
+                syncInputFiles();
+                updateSelectedFilesUI();
+                applyStandardAdDimensionsIfImage(selectedFiles);
+            });
+
+            clearBtn.addEventListener('click', function() {
+                selectedFiles.length = 0;
+                input.value = '';
+                syncInputFiles();
+                updateSelectedFilesUI();
+            });
+
+            form.addEventListener('submit', async function(event) {
+                if (!fallbackSubmitMode || !selectedFiles.length) return;
+
+                event.preventDefault();
+                const submitButton = form.querySelector('.btn-submit');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Yukleniyor...';
+                }
+
+                try {
+                    const formData = new FormData(form);
+                    formData.delete('media');
+                    selectedFiles.forEach(file => formData.append('media', file, file.name));
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'same-origin'
+                    });
+                    if (!response.ok) {
+                        throw new Error('Upload failed');
+                    }
+                    window.location.href = response.url || '<%= adsBasePath %>';
+                } catch (err) {
+                    alert('Dosya yukleme sirasinda bir hata olustu. Lutfen tekrar deneyin.');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.textContent = '<%= editAd ? "Guncelle" : "Reklami Kaydet" %>';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

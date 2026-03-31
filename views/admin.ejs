@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Admin Paneli - 59 Haber Kutusu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --red: #D32F2F; --red-dark: #B71C1C; --red-light: #FFEBEE;
+            --white: #FFFFFF; --gray-50: #FAFAFA; --gray-100: #F5F5F5;
+            --gray-200: #EEEEEE; --gray-300: #E0E0E0; --gray-600: #757575;
+            --gray-800: #424242; --gray-900: #212121;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--gray-900); }
+        a { text-decoration: none; color: inherit; }
+
+        /* Header */
+        .admin-header {
+            background: var(--gray-900); color: var(--white); padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .admin-header h1 { font-size: 18px; font-weight: 700; }
+        .admin-header h1 span { color: var(--red); }
+        .admin-header a { color: var(--gray-600); font-size: 13px; transition: color 0.2s; }
+        .admin-header a:hover { color: var(--white); }
+
+        .admin-menu-toggle{
+            display:none;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-300);
+            color: var(--gray-800);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .admin-links{
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Layout */
+        .admin-layout { display: grid; grid-template-columns: 400px 1fr; min-height: calc(100vh - 56px); }
+
+        /* Form Panel */
+        .form-panel {
+            background: var(--white); padding: 28px; border-right: 1px solid var(--gray-200);
+            overflow-y: auto; max-height: calc(100vh - 56px);
+        }
+        .form-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--red); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-300); border-radius: 6px;
+            font-family: inherit; font-size: 14px; transition: border-color 0.2s; background: var(--white);
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--red);
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .category-check-grid {
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+            border: 1.5px solid var(--gray-300); border-radius: 6px; padding: 10px; background: var(--white);
+        }
+        .category-check-item {
+            display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-800);
+        }
+        .category-check-item input[type="checkbox"] {
+            width: 16px; height: 16px; accent-color: var(--red);
+        }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; }
+        .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--red); }
+        .checkbox-group label { margin-bottom: 0; font-size: 13px; color: var(--gray-800); text-transform: none; letter-spacing: 0; }
+        .file-input { padding: 8px; background: var(--gray-50); }
+        .inline-upload-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+        .inline-upload-row .file-input { flex: 1; min-width: 180px; }
+        .btn-inline-upload {
+            padding: 8px 12px; border: 1.5px solid var(--gray-300); border-radius: 6px; background: var(--white);
+            font-size: 12px; font-weight: 700; color: var(--gray-800); cursor: pointer;
+        }
+        .btn-inline-upload:hover { border-color: var(--red); color: var(--red); }
+        .btn-submit {
+            width: 100%; padding: 12px; background: var(--red); color: var(--white);
+            border: none; border-radius: 6px; font-family: inherit; font-size: 14px;
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--red-dark); }
+        .btn-cancel {
+            display: inline-block; width: 100%; text-align: center; padding: 10px;
+            margin-top: 8px; color: var(--gray-600); font-size: 13px; font-weight: 600;
+            border: 1.5px solid var(--gray-300); border-radius: 6px; transition: all 0.2s;
+        }
+        .btn-cancel:hover { border-color: var(--gray-800); color: var(--gray-800); }
+
+        /* List Panel */
+        .list-panel { padding: 28px; overflow-y: auto; max-height: calc(100vh - 56px); }
+        .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .list-header h2 { font-size: 16px; font-weight: 700; }
+        .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 20px;
+            border: 1.5px solid var(--gray-300); background: var(--white); color: var(--gray-600);
+            cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .filter-btn:hover, .filter-btn.active { background: var(--red); color: var(--white); border-color: var(--red); }
+
+        /* News Table */
+        .news-table { width: 100%; border-collapse: collapse; }
+        .news-table th {
+            text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-600);
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px;
+            border-bottom: 2px solid var(--gray-200); background: var(--gray-50);
+        }
+        .news-table td { padding: 12px; border-bottom: 1px solid var(--gray-200); vertical-align: middle; }
+        .news-table tr:hover td { background: var(--red-light); }
+        .news-row-img { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; }
+        .news-row-title { font-size: 13px; font-weight: 600; line-height: 1.4; }
+        .news-row-cat {
+            display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 10px; background: var(--red-light); color: var(--red);
+        }
+        .news-row-date { display: flex; flex-direction: column; gap: 3px; min-width: 122px; }
+        .news-row-date-main { font-size: 12px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
+        .news-row-date-sub { font-size: 11px; color: var(--gray-600); white-space: nowrap; }
+        .news-row-date-badge {
+            display: inline-block; width: fit-content; font-size: 10px; font-weight: 700;
+            color: #fff; background: #2E7D32; border-radius: 10px; padding: 2px 7px;
+        }
+        .news-row-placement {
+            display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 10px; color: var(--gray-600);
+        }
+        .news-row-placement.has-placement {
+            background: #E8F5E9; color: #2E7D32;
+        }
+        .action-btn {
+            padding: 5px 10px; font-size: 11px; font-weight: 600; border-radius: 4px;
+            border: none; cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.8; }
+        .btn-edit { background: #E3F2FD; color: #1565C0; }
+        .btn-delete { background: var(--red-light); color: var(--red); }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-600); }
+        .empty-state p { font-size: 14px; margin-top: 8px; }
+        .stats { display: flex; gap: 16px; margin-bottom: 20px; }
+        .stat-card {
+            background: var(--white); padding: 16px 20px; border-radius: 8px;
+            border: 1px solid var(--gray-200); flex: 1; text-align: center;
+        }
+        .stat-card .num { font-size: 24px; font-weight: 800; color: var(--red); }
+        .stat-card .label { font-size: 11px; color: var(--gray-600); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        @media (max-width: 900px) {
+            .admin-layout { grid-template-columns: 1fr; }
+            .form-panel { max-height: none; border-right: none; border-bottom: 1px solid var(--gray-200); }
+            .list-panel { max-height: none; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header{
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .admin-menu-toggle{
+                display: inline-flex;
+            }
+            .admin-links{
+                width: 100%;
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding-top: 6px;
+            }
+            .admin-links.open{
+                display: flex;
+            }
+            .admin-header a{
+                font-size: 14px;
+            }
+            .form-panel{ padding: 18px; }
+            .list-panel{ padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h1><span>59</span> Haber Kutusu - Yönetim</h1>
+        <button type="button" class="admin-menu-toggle" id="adminMenuToggle" aria-label="Admin menü">&#9776;</button>
+        <div id="adminLinks" class="admin-links">
+            <a href="/<%= adminPath %>/kunye" style="color:#AB47BC;font-weight:600;">Künye Yönetimi</a>
+            <a href="/<%= adminPath %>/hakkinda" style="color:#FFA726;font-weight:600;">Hakkında Yönetimi</a>
+            <a href="/<%= adminPath %>/ads" style="color:#42A5F5;font-weight:600;">Reklam (PC)</a>
+            <a href="/<%= adminPath %>/ads-mobile" style="color:#66BB6A;font-weight:600;">Reklam (Mobil)</a>
+            <a href="/<%= adminPath %>/ads-common" style="color:#FFB300;font-weight:600;">Reklam (Ortak)</a>
+            <a href="/<%= adminPath %>/scraper" style="color:#66BB6A;font-weight:600;">Haber Çekici</a>
+            <a href="/">&#8592; Siteye Dön</a>
+            <a href="/<%= adminPath %>/cikis" style="color:#ef5350;">Çıkış Yap</a>
+        </div>
+    </div>
+
+    <div class="admin-layout">
+
+        <!-- Form Panel -->
+        <div class="form-panel">
+            <h3 class="form-title"><%= editNews ? 'Haberi Düzenle' : 'Yeni Haber Ekle' %></h3>
+
+            <form action="<%= editNews ? '/api/news/' + editNews._id : '/api/news' %>" method="POST" enctype="multipart/form-data" autocomplete="off">
+
+                <div class="form-group">
+                    <label>Başlık</label>
+                    <input type="text" name="title" required placeholder="Haber başlığını girin..." value="<%= editNews ? editNews.title : '' %>">
+                </div>
+
+                <div class="form-group">
+                    <label>Kısa Açıklama</label>
+                    <textarea name="description" required placeholder="Kısa açıklama yazın..." rows="3"><%= editNews ? editNews.description : '' %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>İçerik</label>
+                    <textarea id="contentEditor" name="content" placeholder="Tam haber içeriği (opsiyonel)..." rows="8"><%= editNews ? editNews.content : '' %></textarea>
+                    <div class="inline-upload-row">
+                        <input id="inlineImageInput" type="file" accept="image/*" multiple class="file-input">
+                        <button type="button" id="insertInlineImageBtn" class="btn-inline-upload">Metin İçine Foto(lar) Ekle</button>
+                    </div>
+                    <p style="font-size:11px;color:var(--gray-600);margin-top:6px;">Uzun metinde imleci nereye bırakırsanız, fotoğraf(lar) o noktaya eklenir.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Kategoriler</label>
+                    <% const selectedCategories = editNews ? ((editNews.categories && editNews.categories.length ? editNews.categories : [editNews.category])) : []; %>
+                    <div class="category-check-grid">
+                        <% categories.forEach(cat => { %>
+                            <label class="category-check-item">
+                                <input type="checkbox" name="categories[]" value="<%= cat %>" <%= selectedCategories.includes(cat) ? 'checked' : '' %>>
+                                <span><%= cat %></span>
+                            </label>
+                        <% }) %>
+                    </div>
+                    <p style="font-size:11px;color:var(--gray-600);margin-top:6px;">Bir haber birden fazla kategoride yayınlanabilir.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Görsel</label>
+                    <input type="file" name="image" accept="image/*" class="file-input">
+                    <% if (editNews && editNews.image) { %>
+                        <input type="hidden" name="existingImage" value="<%= editNews.image %>">
+                        <p style="font-size: 11px; color: var(--gray-600); margin-top: 4px;">Mevcut: <%= editNews.image %></p>
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label>Ana Sayfa Görünürlüğü</label>
+                    <select name="placement">
+                        <option value="none" <%= editNews && editNews.placement === 'none' ? 'selected' : (!editNews ? 'selected' : '') %>>Sadece Kategori Sayfasında</option>
+                        <option value="homepage" <%= editNews && editNews.placement === 'homepage' ? 'selected' : '' %>>Ana Sayfada Göster</option>
+                        <option value="hero" <%= editNews && editNews.placement === 'hero' ? 'selected' : '' %>>Manşet (Hero) Bölümü</option>
+                        <option value="both" <%= editNews && editNews.placement === 'both' ? 'selected' : '' %>>Manşet + Ana Sayfa</option>
+                    </select>
+                    <div style="font-size:11px;color:var(--gray-600);margin-top:6px;line-height:1.5;">
+                        <strong>Sadece Kategori Sayfasında:</strong> Haber yalnızca kendi kategorisinin sayfasında görünür<br>
+                        <strong>Ana Sayfada Göster:</strong> Haber kendi kategorisinin bölümünde ana sayfada da görünür<br>
+                        <strong>Manşet:</strong> Ana sayfanın en üstündeki büyük manşet alanında görünür<br>
+                        <strong>Manşet + Ana Sayfa:</strong> Haber hem manşet alanında hem de kategori bölümünde görünür
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit"><%= editNews ? 'Güncelle' : 'Haberi Yayınla' %></button>
+                <% if (editNews) { %>
+                    <a href="/<%= adminPath %>" class="btn-cancel">İptal</a>
+                <% } %>
+            </form>
+        </div>
+
+        <!-- List Panel -->
+        <div class="list-panel">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="num"><%= news.length %></div>
+                    <div class="label">Toplam Haber</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num"><%= news.filter(n => n.placement === 'hero' || n.placement === 'both').length %></div>
+                    <div class="label">Manşet</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num"><%= news.filter(n => n.placement === 'homepage' || n.placement === 'both').length %></div>
+                    <div class="label">Ana Sayfa</div>
+                </div>
+                <div class="stat-card">
+                    <div class="num"><%= categories.length %></div>
+                    <div class="label">Kategori</div>
+                </div>
+            </div>
+
+            <div class="list-header">
+                <h2>Haberler</h2>
+                <div class="filter-bar">
+                    <a href="/<%= adminPath %>" class="filter-btn <%= !category ? 'active' : '' %>">Tümü</a>
+                    <% categories.forEach(cat => { %>
+                        <a href="/<%= adminPath %>?category=<%= encodeURIComponent(cat) %>" class="filter-btn <%= category === cat ? 'active' : '' %>"><%= cat %></a>
+                    <% }) %>
+                    <form action="/api/news/delete-all" method="POST" style="display:inline;margin-left:12px;" onsubmit="return confirm('TÜM HABERLERİ silmek istediğinize emin misiniz? Bu işlem geri alınamaz!')">
+                        <button type="submit" class="filter-btn" style="background:#D32F2F;color:#fff;border-color:#D32F2F;cursor:pointer;">Tümünü Sil</button>
+                    </form>
+                </div>
+            </div>
+
+            <% if (news.length === 0) { %>
+                <div class="empty-state">
+                    <h3>Henüz haber yok</h3>
+                    <p>Sol panelden yeni haber ekleyerek başlayın.</p>
+                </div>
+            <% } else { %>
+                <table class="news-table">
+                    <thead>
+                        <tr>
+                            <th>Görsel</th>
+                            <th>Başlık</th>
+                            <th>Kategori</th>
+                            <th>Yerleşim</th>
+                            <th>Tarih</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% news.forEach(item => { %>
+                        <tr>
+                            <td>
+                                <% if (item.image) { %>
+                                    <img src="<%= item.image %>" alt="" class="news-row-img">
+                                <% } else { %>
+                                    <div style="width:60px;height:40px;background:var(--gray-200);border-radius:4px;"></div>
+                                <% } %>
+                            </td>
+                            <td><span class="news-row-title"><%= item.title %></span></td>
+                            <td>
+                                <% const itemCategories = (item.categories && item.categories.length > 0) ? item.categories : [item.category]; %>
+                                <span class="news-row-cat"><%= itemCategories.join(', ') %></span>
+                            </td>
+                            <td>
+                                <% const placementLabels = { 'none': '-', 'homepage': 'Ana Sayfa', 'hero': 'Manşet', 'both': 'Manşet + Ana Sayfa' }; %>
+                                <span class="news-row-placement <%= item.placement && item.placement !== 'none' ? 'has-placement' : '' %>">
+                                    <%= placementLabels[item.placement] || '-' %>
+                                </span>
+                            </td>
+                            <td>
+                                <% const hoursSincePublished = (Date.now() - new Date(item.createdAt).getTime()) / (1000 * 60 * 60); %>
+                                <% const daysSincePublished = Math.floor(hoursSincePublished / 24); %>
+                                <div class="news-row-date">
+                                    <span class="news-row-date-main">
+                                        <%= item.createdAt.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+                                        <%= item.createdAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) %>
+                                    </span>
+                                    <span class="news-row-date-sub">
+                                        <% if (hoursSincePublished < 24) { %>
+                                            Bugün eklendi
+                                        <% } else if (daysSincePublished === 1) { %>
+                                            1 gün önce
+                                        <% } else { %>
+                                            <%= daysSincePublished %> gün önce
+                                        <% } %>
+                                    </span>
+                                    <% if (hoursSincePublished < 24) { %>
+                                        <span class="news-row-date-badge">Yeni</span>
+                                    <% } %>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="/<%= adminPath %>?edit=<%= item._id %>" class="action-btn btn-edit">Düzenle</a>
+                                <form action="/api/news/<%= item._id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Bu haberi silmek istediğinize emin misiniz?')">
+                                    <button type="submit" class="action-btn btn-delete">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var adminMenuToggle = document.getElementById('adminMenuToggle');
+            var adminLinks = document.getElementById('adminLinks');
+            if (adminMenuToggle && adminLinks) {
+                adminMenuToggle.addEventListener('click', function() {
+                    adminLinks.classList.toggle('open');
+                });
+                window.addEventListener('resize', function() {
+                    if ((window.innerWidth || document.documentElement.clientWidth) > 768) {
+                        adminLinks.classList.remove('open');
+                    }
+                });
+            }
+
+            const btn = document.getElementById('insertInlineImageBtn');
+            const fileInput = document.getElementById('inlineImageInput');
+            const editor = document.getElementById('contentEditor');
+            if (!btn || !fileInput || !editor) return;
+            let lastSelectionStart = 0;
+            let lastSelectionEnd = 0;
+
+            function saveSelection() {
+                lastSelectionStart = editor.selectionStart || 0;
+                lastSelectionEnd = editor.selectionEnd || 0;
+            }
+
+            ['click', 'keyup', 'select', 'focus'].forEach(function(evt) {
+                editor.addEventListener(evt, saveSelection);
+            });
+            saveSelection();
+
+            btn.addEventListener('click', async function() {
+                const files = fileInput.files ? Array.from(fileInput.files) : [];
+                if (!files.length) {
+                    alert('Önce en az bir fotoğraf seçin.');
+                    return;
+                }
+
+                const formData = new FormData();
+                files.forEach(function(file) {
+                    formData.append('images', file);
+                });
+
+                btn.disabled = true;
+                btn.textContent = 'Yükleniyor...';
+                try {
+                    const response = await fetch('/api/news/upload-inline-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const raw = await response.text();
+                    let data = null;
+                    try {
+                        data = JSON.parse(raw);
+                    } catch (e) {
+                        // HTML dönmüşse genelde oturum/login redirect veya eski server sürümü
+                        if (response.redirected || response.url.includes('/giris') || raw.startsWith('<!DOCTYPE')) {
+                            throw new Error('Oturum süresi dolmuş olabilir. Sayfayı yenileyip tekrar giriş yapın.');
+                        }
+                        throw new Error('Sunucu beklenmeyen bir yanıt döndürdü. Sunucuyu yeniden başlatın.');
+                    }
+
+                    if (!response.ok || data.error || !Array.isArray(data.urls) || data.urls.length === 0) {
+                        throw new Error(data.error || 'Yükleme başarısız');
+                    }
+
+                    const insertText = '\n' + data.urls.map(function(url) {
+                        return '<img src="' + url + '" alt="" style="max-width:100%;height:auto;">';
+                    }).join('\n') + '\n';
+                    const start = lastSelectionStart;
+                    const end = lastSelectionEnd;
+                    const oldValue = editor.value || '';
+                    editor.value = oldValue.slice(0, start) + insertText + oldValue.slice(end);
+                    const nextPos = start + insertText.length;
+                    editor.focus();
+                    editor.setSelectionRange(nextPos, nextPos);
+                    saveSelection();
+                    fileInput.value = '';
+                } catch (err) {
+                    alert('Fotoğraf eklenemedi: ' + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Metin İçine Foto(lar) Ekle';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

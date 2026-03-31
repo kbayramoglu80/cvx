@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Hakkında Yönetimi - 59 Haber Kutusu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --red: #D32F2F; --red-dark: #B71C1C; --gray-100: #F5F5F5;
+            --gray-200: #EEEEEE; --gray-300: #E0E0E0; --gray-600: #757575;
+            --gray-900: #212121; --white: #FFFFFF;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--gray-900); }
+        a { text-decoration: none; color: inherit; }
+        .admin-header {
+            background: var(--gray-900); color: var(--white); padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .admin-header h1 { font-size: 18px; font-weight: 700; }
+        .admin-header h1 span { color: var(--red); }
+        .admin-header a { color: var(--gray-600); font-size: 13px; transition: color 0.2s; }
+        .admin-header a:hover { color: var(--white); }
+
+        .admin-menu-toggle{
+            display:none;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-300);
+            color: #212121;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .admin-links{
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .container {
+            max-width: 980px; margin: 28px auto; background: #fff;
+            border: 1px solid var(--gray-200); border-radius: 10px; padding: 26px;
+        }
+        .title { font-size: 18px; font-weight: 800; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid var(--red); }
+        .hint {
+            margin: 0 0 14px;
+            font-size: 13px;
+            color: var(--gray-600);
+            background: #fafafa;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block; font-size: 12px; font-weight: 700; color: var(--gray-600);
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-group textarea {
+            width: 100%; min-height: 180px; padding: 12px; border: 1.5px solid var(--gray-300);
+            border-radius: 8px; font-family: inherit; font-size: 14px; resize: vertical; line-height: 1.6;
+        }
+        .form-group textarea:focus { outline: none; border-color: var(--red); }
+        .btn-submit {
+            width: 100%; padding: 12px; background: var(--red); color: var(--white);
+            border: none; border-radius: 6px; font-family: inherit; font-size: 14px;
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-submit:hover { background: var(--red-dark); }
+
+        @media (max-width: 768px) {
+            .admin-header{
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .admin-menu-toggle{
+                display: inline-flex;
+            }
+            .admin-links{
+                width: 100%;
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding-top: 6px;
+            }
+            .admin-links.open{
+                display: flex;
+            }
+            .admin-header a{
+                font-size: 14px;
+            }
+            .container{
+                margin: 14px 12px;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1><span>59</span> Haber Kutusu - Hakkında Yönetimi</h1>
+        <button type="button" class="admin-menu-toggle" id="adminMenuToggle" aria-label="Admin menü">&#9776;</button>
+        <div id="adminLinks" class="admin-links">
+            <a href="/<%= adminPath %>">Haberler</a>
+            <a href="/<%= adminPath %>/kunye" style="color:#AB47BC;font-weight:600;">Künye</a>
+            <a href="/<%= adminPath %>/ads" style="color:#42A5F5;font-weight:600;">Reklam (PC)</a>
+            <a href="/<%= adminPath %>/ads-mobile" style="color:#66BB6A;font-weight:600;">Reklam (Mobil)</a>
+            <a href="/<%= adminPath %>/ads-common" style="color:#FFB300;font-weight:600;">Reklam (Ortak)</a>
+            <a href="/<%= adminPath %>/scraper" style="color:#66BB6A;font-weight:600;">Haber Çekici</a>
+            <a href="/">Siteye Dön</a>
+            <a href="/<%= adminPath %>/cikis" style="color:#ef5350;">Çıkış Yap</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="title">Hakkında Sayfasını Düzenle</h2>
+        <p class="hint">Paragrafları ayırmak için boş satır bırakın. Değişiklikler <strong>/hakkinda</strong> sayfasına yansır.</p>
+        <form action="/api/hakkinda" method="POST">
+            <div class="form-group">
+                <label>Hakkında Metni</label>
+                <textarea name="aboutText" required><%= about.aboutText %></textarea>
+            </div>
+            <div class="form-group">
+                <label>Telif Hakkı Metni</label>
+                <textarea name="copyrightText" required><%= about.copyrightText %></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Hakkında Bilgilerini Kaydet</button>
+        </form>
+    </div>
+
+    <script>
+        (function() {
+            var adminMenuToggle = document.getElementById('adminMenuToggle');
+            var adminLinks = document.getElementById('adminLinks');
+            if (!adminMenuToggle || !adminLinks) return;
+            adminMenuToggle.addEventListener('click', function() {
+                adminLinks.classList.toggle('open');
+            });
+            window.addEventListener('resize', function() {
+                if ((window.innerWidth || document.documentElement.clientWidth) > 768) {
+                    adminLinks.classList.remove('open');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
